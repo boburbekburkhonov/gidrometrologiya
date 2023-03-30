@@ -13,6 +13,10 @@ export class InfoService {
     private readonly infoModel: Model<infoDocument>,
   ) {}
 
+  async getInfoImei(imei: string): Promise<Info> {
+    return await this.infoModel.findOne({ imei: imei });
+  }
+
   async getInfo(): Promise<Info[]> {
     return await this.infoModel.find();
   }

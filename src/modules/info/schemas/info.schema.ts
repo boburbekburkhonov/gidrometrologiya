@@ -3,7 +3,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 export type infoDocument = HydratedDocument<Info>;
 
-@Schema()
+@Schema({ collection: 'info' })
 export class Info {
   @Prop({
     type: Mongoose.Schema.Types.UUID,
