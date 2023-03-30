@@ -60,10 +60,14 @@ export class MqttService implements OnModuleInit {
             );
 
             const foundData: any = await this.dataModel
-              .findOne({ imei: data.i })
+              .find({ imei: data.i })
               .catch((error: unknown) => console.log(error));
 
-            if (timeData.getTime() != foundData?.time.getTime()) {
+            const [filterData] = foundData.filter(
+              (e: any) => timeData.getTime() == e.time.getTime(),
+            );
+
+            if (!filterData) {
               const newData = new this.dataModel({
                 imei: data.i,
                 time: timeData,
