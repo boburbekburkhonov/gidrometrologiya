@@ -6,7 +6,7 @@ export type UserDocument = HydratedDocument<User>;
 @Schema({ collection: 'users' })
 export class User {
   @Prop({
-    type: Mongoose.Schema.Types.UUID,
+    type: Mongoose.Schema.Types.ObjectId,
   })
   readonly id: String;
 

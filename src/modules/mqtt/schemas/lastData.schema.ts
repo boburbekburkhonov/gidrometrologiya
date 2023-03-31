@@ -87,6 +87,12 @@ export class LastData {
     required: true,
   })
   readonly typeSensor: string;
+
+  @Prop({
+    type: String,
+    required: true,
+  })
+  readonly user: string;
 }
 
 export const lastDataSchema = SchemaFactory.createForClass(LastData);

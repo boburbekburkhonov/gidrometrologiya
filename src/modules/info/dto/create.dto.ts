@@ -32,4 +32,8 @@ export class createDto {
   @IsString()
   @IsOptional()
   reservoirId?: string;
+
+  @IsString()
+  @IsOptional()
+  user?: string;
 }

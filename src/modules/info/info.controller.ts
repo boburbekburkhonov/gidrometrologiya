@@ -9,17 +9,24 @@ import {
   UseGuards,
   HttpCode,
   HttpStatus,
+  Req,
 } from '@nestjs/common';
 import { JwtGuard } from '../users/guards/jwt.guard';
 import { InfoService } from './info.service';
 import { Info } from './schemas/info.schema';
 import { createDto } from './dto/create.dto';
 import { updateDto } from './dto/update.dto';
+import { CustomeRequest } from '../../types';
 
 @UseGuards(JwtGuard)
 @Controller('info')
 export class InfoController {
   constructor(private readonly service: InfoService) {}
+
+  @Get('user')
+  getInfoUserId(@Req() request: CustomeRequest): Promise<Info[]> {
+    return this.service.getInfoUserId(request.userId);
+  }
 
   @Get('list')
   getInfo(): Promise<Info[]> {
@@ -28,7 +35,11 @@ export class InfoController {
 
   @HttpCode(HttpStatus.CREATED)
   @Post('create')
-  createInfo(@Body() body: createDto): Promise<Info> {
+  createInfo(
+    @Req() request: CustomeRequest,
+    @Body() body: createDto,
+  ): Promise<Info> {
+    body.user = request.userId;
     return this.service.createInfo(body);
   }
 

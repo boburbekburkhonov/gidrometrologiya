@@ -29,7 +29,6 @@ export class UsersService {
     if (!existingUser) {
       throw new HttpException('User not found, Register', HttpStatus.OK);
     }
-    console.log(existingUser);
 
     return this.jwtService.sign(existingUser._id.toString());
   }

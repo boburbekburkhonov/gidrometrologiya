@@ -32,4 +32,8 @@ export class updateDto {
   @IsString()
   @IsOptional()
   readonly reservoirId?: string;
+
+  @IsString()
+  @IsOptional()
+  user?: string;
 }

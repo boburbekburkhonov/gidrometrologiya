@@ -5,12 +5,14 @@ import { InfoService } from '../info/info.service';
 import { MqttService } from './mqtt.service';
 import { Data, dataSchema } from './schemas/data.schema';
 import { LastData, lastDataSchema } from './schemas/lastData.schema';
+import { MqttController } from './mqtt.controller';
 
 @Module({
   imports: [
     MongooseModule.forFeature(
       [
         {
+
           name: Info.name,
           schema: infoSchema,
         },
@@ -37,5 +39,6 @@ import { LastData, lastDataSchema } from './schemas/lastData.schema';
     ),
   ],
   providers: [InfoService, MqttService],
+  controllers: [MqttController],
 })
 export class MqttModule {}

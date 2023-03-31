@@ -30,6 +30,7 @@ export class MqttService implements OnModuleInit {
 
   private mqttClient: any;
 
+  // !MQTT CONNECT
   onModuleInit() {
     this.mqttClient = mqtt.connect(this.options);
 
@@ -45,56 +46,63 @@ export class MqttService implements OnModuleInit {
     this.mqttClient.on(
       'message',
       async (topic: string, payload: string): Promise<void> => {
-        const data = JSON.parse(payload);
+        try {
+          const data = JSON.parse(payload);
 
-        if (data.ts) {
-          const existingInfo = await this.infoService.getInfoImei(data.i);
-
-          if (existingInfo) {
-            const timeData = new Date(
-              `${Number(data.t.split('/')[0]) + 2000}-${
-                data.t.split('/')[1]
-              }-${data.t.split('/')[2].slice(0, 2)} ${data.t
-                .split('/')[2]
-                .slice(3, 14)}`,
+          if (data.ts) {
+            const existingInfo: any = await this.infoService.getInfoImei(
+              data.i,
             );
 
-            const foundData: any = await this.dataModel
-              .find({ imei: data.i })
-              .catch((error: unknown) => console.log(error));
+            console.log(data);
 
-            const [filterData] = foundData.filter(
-              (e: any) => timeData.getTime() == e.time.getTime(),
-            );
+            if (existingInfo) {
+              const timeData = new Date(
+                `${Number(data.t.split('/')[0]) + 2000}-${
+                  data.t.split('/')[1]
+                }-${data.t.split('/')[2].slice(0, 2)} ${data.t
+                  .split('/')[2]
+                  .slice(3, 14)}`,
+              );
 
-            if (!filterData) {
-              const newData = new this.dataModel({
+              timeData.setHours(timeData.getHours() + 5);
+
+              const foundData: any = await this.dataModel.find({
                 imei: data.i,
-                time: timeData,
-                windDirection: Number(data.wd) / 10,
-                rainHeight: Number(data.rh) / 10,
-                windSpeed: Number(data.ws) / 10,
-                airHumidity: Number(data.ah) / 10,
-                airTemp: Number(data.at) / 10,
-                airPressure: Number(data.ap) / 10,
-                soilHumidity: Number(data.sh) / 10,
-                soilTemp: Number(data.st) / 10,
-                leafHumidity: Number(data.lh) / 10,
-                leafTemp: Number(data.lt) / 10,
-                typeSensor: data.ts,
               });
 
-              await newData
-                .save()
-                .catch((error: unknown) => console.log(error));
+              const [filterData] = foundData.filter(
+                (e: any) => timeData.getTime() == e.time.getTime(),
+              );
 
-              const existingLastData = await this.lastDataModel
-                .findOne({ imei: data.i })
-                .catch((error: unknown) => console.log(error));
+              console.log(filterData);
 
-              if (existingLastData) {
-                await this.lastDataModel
-                  .findOneAndUpdate(
+              if (!filterData) {
+                const newData = new this.dataModel({
+                  imei: data.i,
+                  time: timeData,
+                  windDirection: Number(data.wd) / 10,
+                  rainHeight: Number(data.rh) / 10,
+                  windSpeed: Number(data.ws) / 10,
+                  airHumidity: Number(data.ah) / 10,
+                  airTemp: Number(data.at) / 10,
+                  airPressure: Number(data.ap) / 10,
+                  soilHumidity: Number(data.sh) / 10,
+                  soilTemp: Number(data.st) / 10,
+                  leafHumidity: Number(data.lh) / 10,
+                  leafTemp: Number(data.lt) / 10,
+                  typeSensor: data.ts,
+                  user: existingInfo.user.toString(),
+                });
+
+                await newData.save();
+
+                const existingLastData = await this.lastDataModel.findOne({
+                  imei: data.i,
+                });
+
+                if (existingLastData) {
+                  await this.lastDataModel.findOneAndUpdate(
                     { imei: data.i },
                     {
                       imei: data.i,
@@ -110,34 +118,434 @@ export class MqttService implements OnModuleInit {
                       leafHumidity: Number(data.lh) / 10,
                       leafTemp: Number(data.lt) / 10,
                       typeSensor: data.ts,
+                      user: existingInfo.user.toString(),
                     },
-                  )
-                  .catch((error: unknown) => console.log(error));
-              } else {
-                const newLastData = new this.lastDataModel({
-                  imei: data.i,
-                  time: timeData,
-                  windDirection: Number(data.wd) / 10,
-                  rainHeight: Number(data.rh) / 10,
-                  windSpeed: Number(data.ws) / 10,
-                  airHumidity: Number(data.ah) / 10,
-                  airTemp: Number(data.at) / 10,
-                  airPressure: Number(data.ap) / 10,
-                  soilHumidity: Number(data.sh) / 10,
-                  soilTemp: Number(data.st) / 10,
-                  leafHumidity: Number(data.lh) / 10,
-                  leafTemp: Number(data.lt) / 10,
-                  typeSensor: data.ts,
-                });
+                  );
+                } else {
+                  const newLastData = new this.lastDataModel({
+                    imei: data.i,
+                    time: timeData,
+                    windDirection: Number(data.wd) / 10,
+                    rainHeight: Number(data.rh) / 10,
+                    windSpeed: Number(data.ws) / 10,
+                    airHumidity: Number(data.ah) / 10,
+                    airTemp: Number(data.at) / 10,
+                    airPressure: Number(data.ap) / 10,
+                    soilHumidity: Number(data.sh) / 10,
+                    soilTemp: Number(data.st) / 10,
+                    leafHumidity: Number(data.lh) / 10,
+                    leafTemp: Number(data.lt) / 10,
+                    typeSensor: data.ts,
+                    user: existingInfo.user.toString(),
+                  });
 
-                await newLastData
-                  .save()
-                  .catch((error: unknown) => console.log(error));
+                  await newLastData.save();
+                }
               }
             }
           }
+        } catch (error: unknown) {
+          console.log(error);
         }
       },
     );
+  }
+
+  //! LASTDATA
+  async getLastData(userId: string): Promise<LastData[]> {
+    return await this.lastDataModel
+      .find({ user: userId })
+      .select(
+        'imei time windDirection rainHeight windSpeed airHumidity airTemp airPressure soilHumidity soilTemp leafHumidity leafTemp typeSensor',
+      );
+  }
+
+  //! DATA
+  async getData(userId: string): Promise<Data[]> {
+    return await this.dataModel
+      .find({ user: userId })
+      .select(
+        'imei time windDirection rainHeight windSpeed airHumidity airTemp airPressure soilHumidity soilTemp leafHumidity leafTemp typeSensor',
+      );
+  }
+
+  // ! DATA STATISTICS
+  async getDataStatics(userId: string): Promise<any> {
+    // PRESENT  DAYS
+    let date = new Date();
+    let currentPresentDate = new Date();
+    currentPresentDate.setHours(5);
+    currentPresentDate.setMinutes(0);
+    currentPresentDate.setSeconds(0);
+    date.setHours(date.getHours() + 5);
+
+    const dataPresent: any = await this.dataModel
+      .find({
+        user: userId,
+        time: {
+          $gte: currentPresentDate,
+          $lt: date,
+        },
+      })
+      .catch((error: unknown) => console.log(error));
+
+    // THREE  DAYS
+    let currentThreeDate = new Date();
+    let threeDaysAgoDate = new Date();
+    threeDaysAgoDate.setDate(threeDaysAgoDate.getDate() - 3);
+    threeDaysAgoDate.setHours(5);
+    threeDaysAgoDate.setMinutes(0);
+    threeDaysAgoDate.setSeconds(0);
+    currentThreeDate.setHours(4);
+    currentThreeDate.setMinutes(59);
+    currentThreeDate.setSeconds(59);
+
+    const dataThreeDay: any = await this.dataModel
+      .find({
+        user: userId,
+        time: {
+          $gte: threeDaysAgoDate,
+          $lt: currentThreeDate,
+        },
+      })
+      .catch((error: unknown) => console.log(error));
+
+    // TEN  DAYS
+    let currentTenDate = new Date();
+    let tenDaysAgoDate = new Date();
+    tenDaysAgoDate.setDate(tenDaysAgoDate.getDate() - 10);
+    tenDaysAgoDate.setHours(5);
+    tenDaysAgoDate.setMinutes(0);
+    tenDaysAgoDate.setSeconds(0);
+    currentTenDate.setDate(currentTenDate.getDate() - 3);
+    currentTenDate.setHours(4);
+    currentTenDate.setMinutes(59);
+    currentTenDate.setSeconds(59);
+
+    const dataTenDay: any = await this.dataModel
+      .find({
+        time: {
+          $gte: tenDaysAgoDate,
+          $lt: currentTenDate,
+        },
+      })
+      .catch((error: unknown) => console.log(error));
+
+    // MONTH
+    let currentMonthDate = new Date();
+    let startMonthDate = new Date();
+
+    startMonthDate.setMonth(startMonthDate.getMonth() - 1);
+    startMonthDate.setDate(startMonthDate.getDate() - 11);
+    startMonthDate.setHours(5);
+    startMonthDate.setMinutes(0);
+    startMonthDate.setSeconds(0);
+    currentMonthDate.setDate(currentMonthDate.getDate() - 10);
+    currentMonthDate.setHours(4);
+    currentMonthDate.setMinutes(59);
+    currentMonthDate.setSeconds(59);
+
+    const dataMonthDay: any = await this.dataModel
+      .find({
+        time: {
+          $gte: startMonthDate,
+          $lt: currentMonthDate,
+        },
+      })
+      .catch((error: unknown) => console.log(error));
+
+    // ONE YEAR
+    let currentYearDate = new Date();
+    let startYearDate = new Date();
+
+    startYearDate.setFullYear(startYearDate.getFullYear() - 1);
+    startYearDate.setMonth(startYearDate.getMonth() - 1);
+    startYearDate.setDate(startYearDate.getDate() - 11);
+    startYearDate.setHours(5);
+    startYearDate.setMinutes(0);
+    startYearDate.setSeconds(0);
+    currentYearDate.setMonth(currentYearDate.getMonth() - 1);
+    currentYearDate.setDate(currentYearDate.getDate() - 11);
+    currentYearDate.setHours(4);
+    currentYearDate.setMinutes(59);
+    currentYearDate.setSeconds(59);
+
+    const dataYear: any = await this.dataModel
+      .find({
+        time: {
+          $gte: startYearDate,
+          $lt: currentYearDate,
+        },
+      })
+      .catch((error: unknown) => console.log(error));
+
+    return {
+      presentDay: dataPresent.length,
+      dataThreeDay: dataThreeDay.length,
+      dataTenDay: dataTenDay.length,
+      dataMonthDay: dataMonthDay.length,
+      dataYear: dataYear.length,
+    };
+  }
+
+  // ! DATA PRESENT DAY
+  async getDataPresentDay(userId: string): Promise<Data[]> {
+    let date = new Date();
+    let currentPresentDate = new Date();
+    currentPresentDate.setHours(5);
+    currentPresentDate.setMinutes(0);
+    currentPresentDate.setSeconds(0);
+    date.setHours(date.getHours() + 5);
+
+    const dataPresent: any = await this.dataModel
+      .find({
+        user: userId,
+        time: {
+          $gte: currentPresentDate,
+          $lt: date,
+        },
+      })
+      .select(
+        'imei time windDirection rainHeight windSpeed airHumidity airTemp airPressure soilHumidity soilTemp leafHumidity leafTemp typeSensor',
+      )
+      .catch((error: unknown) => console.log(error));
+
+    return dataPresent;
+  }
+
+  // ! DATA THREE DAY
+  async getDataThreeDay(userId: string): Promise<Data[]> {
+    let currentThreeDate = new Date();
+    let threeDaysAgoDate = new Date();
+    threeDaysAgoDate.setDate(threeDaysAgoDate.getDate() - 3);
+    threeDaysAgoDate.setHours(5);
+    threeDaysAgoDate.setMinutes(0);
+    threeDaysAgoDate.setSeconds(0);
+    currentThreeDate.setHours(4);
+    currentThreeDate.setMinutes(59);
+    currentThreeDate.setSeconds(59);
+
+    const dataThreeDay: any = await this.dataModel
+      .find({
+        user: userId,
+        time: {
+          $gte: threeDaysAgoDate,
+          $lt: currentThreeDate,
+        },
+      })
+      .catch((error: unknown) => console.log(error));
+
+    return dataThreeDay;
+  }
+
+  // ! DATA TEN DAY
+  async getDataTenDay(userId: string): Promise<Data[]> {
+    let currentTenDate = new Date();
+    let tenDaysAgoDate = new Date();
+    tenDaysAgoDate.setDate(tenDaysAgoDate.getDate() - 10);
+    tenDaysAgoDate.setHours(5);
+    tenDaysAgoDate.setMinutes(0);
+    tenDaysAgoDate.setSeconds(0);
+    currentTenDate.setDate(currentTenDate.getDate() - 3);
+    currentTenDate.setHours(4);
+    currentTenDate.setMinutes(59);
+    currentTenDate.setSeconds(59);
+
+    const dataTenDay: any = await this.dataModel
+      .find({
+        time: {
+          $gte: tenDaysAgoDate,
+          $lt: currentTenDate,
+        },
+      })
+      .catch((error: unknown) => console.log(error));
+
+    return dataTenDay;
+  }
+
+  // ! DATA MONTH
+  async getDataMonth(userId: string): Promise<Data[]> {
+    let currentMonthDate = new Date();
+    let startMonthDate = new Date();
+
+    startMonthDate.setMonth(startMonthDate.getMonth() - 1);
+    startMonthDate.setDate(startMonthDate.getDate() - 11);
+    startMonthDate.setHours(5);
+    startMonthDate.setMinutes(0);
+    startMonthDate.setSeconds(0);
+    currentMonthDate.setDate(currentMonthDate.getDate() - 10);
+    currentMonthDate.setHours(4);
+    currentMonthDate.setMinutes(59);
+    currentMonthDate.setSeconds(59);
+
+    const dataMonthDay: any = await this.dataModel
+      .find({
+        time: {
+          $gte: startMonthDate,
+          $lt: currentMonthDate,
+        },
+      })
+      .catch((error: unknown) => console.log(error));
+
+    return dataMonthDay;
+  }
+
+  // ! DATA ONE YEAR
+  async getDataYear(userId: string): Promise<Data[]> {
+    let currentYearDate = new Date();
+    let startYearDate = new Date();
+
+    startYearDate.setFullYear(startYearDate.getFullYear() - 1);
+    startYearDate.setMonth(startYearDate.getMonth() - 1);
+    startYearDate.setDate(startYearDate.getDate() - 11);
+    startYearDate.setHours(5);
+    startYearDate.setMinutes(0);
+    startYearDate.setSeconds(0);
+    currentYearDate.setMonth(currentYearDate.getMonth() - 1);
+    currentYearDate.setDate(currentYearDate.getDate() - 11);
+    currentYearDate.setHours(4);
+    currentYearDate.setMinutes(59);
+    currentYearDate.setSeconds(59);
+
+    const dataYear: any = await this.dataModel
+      .find({
+        time: {
+          $gte: startYearDate,
+          $lt: currentYearDate,
+        },
+      })
+      .catch((error: unknown) => console.log(error));
+
+    return dataYear;
+  }
+
+  // ! DATA STATISTICS DEVICES
+  async getDataStaticsDevices(userId: string): Promise<any> {
+    // PRESENT  DAYS
+    let date = new Date();
+    let currentPresentDate = new Date();
+    currentPresentDate.setHours(5);
+    currentPresentDate.setMinutes(0);
+    currentPresentDate.setSeconds(0);
+    date.setHours(date.getHours() + 5);
+
+    const dataPresent: any = await this.dataModel
+      .find({
+        user: userId,
+        time: {
+          $gte: currentPresentDate,
+          $lt: date,
+        },
+      })
+      .catch((error: unknown) => console.log(error));
+
+    const foundDevices = dataPresent.filter((e: { imei: any }) =>
+      dataPresent.filter((i: { imei: any }) => e.imei == i.imei),
+    );
+
+    console.log(
+      'Devices' +
+        dataPresent.filter((e: { imei: any }) =>
+          dataPresent.filter((i: { imei: any }) => e.imei != i.imei),
+        ),
+    );
+
+    // THREE  DAYS
+    let currentThreeDate = new Date();
+    let threeDaysAgoDate = new Date();
+    threeDaysAgoDate.setDate(threeDaysAgoDate.getDate() - 3);
+    threeDaysAgoDate.setHours(5);
+    threeDaysAgoDate.setMinutes(0);
+    threeDaysAgoDate.setSeconds(0);
+    currentThreeDate.setHours(4);
+    currentThreeDate.setMinutes(59);
+    currentThreeDate.setSeconds(59);
+
+    const dataThreeDay: any = await this.dataModel
+      .find({
+        user: userId,
+        time: {
+          $gte: threeDaysAgoDate,
+          $lt: currentThreeDate,
+        },
+      })
+      .catch((error: unknown) => console.log(error));
+
+    // TEN  DAYS
+    let currentTenDate = new Date();
+    let tenDaysAgoDate = new Date();
+    tenDaysAgoDate.setDate(tenDaysAgoDate.getDate() - 10);
+    tenDaysAgoDate.setHours(5);
+    tenDaysAgoDate.setMinutes(0);
+    tenDaysAgoDate.setSeconds(0);
+    currentTenDate.setDate(currentTenDate.getDate() - 3);
+    currentTenDate.setHours(4);
+    currentTenDate.setMinutes(59);
+    currentTenDate.setSeconds(59);
+
+    const dataTenDay: any = await this.dataModel
+      .find({
+        time: {
+          $gte: tenDaysAgoDate,
+          $lt: currentTenDate,
+        },
+      })
+      .catch((error: unknown) => console.log(error));
+
+    // MONTH
+    let currentMonthDate = new Date();
+    let startMonthDate = new Date();
+
+    startMonthDate.setMonth(startMonthDate.getMonth() - 1);
+    startMonthDate.setDate(startMonthDate.getDate() - 11);
+    startMonthDate.setHours(5);
+    startMonthDate.setMinutes(0);
+    startMonthDate.setSeconds(0);
+    currentMonthDate.setDate(currentMonthDate.getDate() - 10);
+    currentMonthDate.setHours(4);
+    currentMonthDate.setMinutes(59);
+    currentMonthDate.setSeconds(59);
+
+    const dataMonthDay: any = await this.dataModel
+      .find({
+        time: {
+          $gte: startMonthDate,
+          $lt: currentMonthDate,
+        },
+      })
+      .catch((error: unknown) => console.log(error));
+
+    // ONE YEAR
+    let currentYearDate = new Date();
+    let startYearDate = new Date();
+
+    startYearDate.setFullYear(startYearDate.getFullYear() - 1);
+    startYearDate.setMonth(startYearDate.getMonth() - 1);
+    startYearDate.setDate(startYearDate.getDate() - 11);
+    startYearDate.setHours(5);
+    startYearDate.setMinutes(0);
+    startYearDate.setSeconds(0);
+    currentYearDate.setMonth(currentYearDate.getMonth() - 1);
+    currentYearDate.setDate(currentYearDate.getDate() - 11);
+    currentYearDate.setHours(4);
+    currentYearDate.setMinutes(59);
+    currentYearDate.setSeconds(59);
+
+    const dataYear: any = await this.dataModel
+      .find({
+        time: {
+          $gte: startYearDate,
+          $lt: currentYearDate,
+        },
+      })
+      .catch((error: unknown) => console.log(error));
+
+    return {
+      presentDay: dataPresent.length,
+      dataThreeDay: dataThreeDay.length,
+      dataTenDay: dataTenDay.length,
+      dataMonthDay: dataMonthDay.length,
+      dataYear: dataYear.length,
+    };
   }
 }

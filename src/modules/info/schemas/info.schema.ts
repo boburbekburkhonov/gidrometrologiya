@@ -1,12 +1,13 @@
 import Mongoose, { HydratedDocument } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { User } from 'src/modules/users/schemas/users.schema';
 
 export type infoDocument = HydratedDocument<Info>;
 
 @Schema({ collection: 'info' })
 export class Info {
   @Prop({
-    type: Mongoose.Schema.Types.UUID,
+    type: Mongoose.Schema.Types.ObjectId,
   })
   readonly id: String;
 
@@ -56,6 +57,13 @@ export class Info {
     type: String,
   })
   readonly reservoirId: string;
+
+  @Prop({
+    type: Mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true,
+  })
+  readonly user: User[];
 }
 
 export const infoSchema = SchemaFactory.createForClass(Info);
