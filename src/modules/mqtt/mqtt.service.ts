@@ -421,6 +421,10 @@ export class MqttService implements OnModuleInit {
 
   // ! DATA STATISTICS DEVICES
   async getDataStaticsDevices(userId: string): Promise<any> {
+    const foundDevices: any = await this.infoService
+      .getInfoUserId(userId)
+      .catch((error: unknown) => console.log(error));
+
     // PRESENT  DAYS
     let date = new Date();
     let currentPresentDate = new Date();
@@ -439,16 +443,16 @@ export class MqttService implements OnModuleInit {
       })
       .catch((error: unknown) => console.log(error));
 
-    const foundDevices = dataPresent.filter((e: { imei: any }) =>
-      dataPresent.filter((i: { imei: any }) => e.imei == i.imei),
-    );
+    let dataPresentDayWorkingDevices = [];
 
-    console.log(
-      'Devices' +
-        dataPresent.filter((e: { imei: any }) =>
-          dataPresent.filter((i: { imei: any }) => e.imei != i.imei),
-        ),
-    );
+    for (let i = 0; i < foundDevices.length; i++) {
+      for (let j = 0; i < dataPresent.length; j++) {
+        if (foundDevices[i].imei == dataPresent[j].imei) {
+          dataPresentDayWorkingDevices.push(foundDevices[i]);
+          break;
+        }
+      }
+    }
 
     // THREE  DAYS
     let currentThreeDate = new Date();
@@ -471,6 +475,17 @@ export class MqttService implements OnModuleInit {
       })
       .catch((error: unknown) => console.log(error));
 
+    let dataThreeDayWorkingDevices = [];
+
+    for (let i = 0; i < foundDevices.length; i++) {
+      for (let j = 0; i < dataThreeDay.length; j++) {
+        if (foundDevices[i].imei == dataThreeDay[j].imei) {
+          dataThreeDayWorkingDevices.push(foundDevices[i]);
+          break;
+        }
+      }
+    }
+
     // TEN  DAYS
     let currentTenDate = new Date();
     let tenDaysAgoDate = new Date();
@@ -491,6 +506,17 @@ export class MqttService implements OnModuleInit {
         },
       })
       .catch((error: unknown) => console.log(error));
+
+    let dataTenDayWorkingDevices = [];
+
+    for (let i = 0; i < foundDevices.length; i++) {
+      for (let j = 0; i < dataTenDay.length; j++) {
+        if (foundDevices[i].imei == dataTenDay[j].imei) {
+          dataTenDayWorkingDevices.push(foundDevices[i]);
+          break;
+        }
+      }
+    }
 
     // MONTH
     let currentMonthDate = new Date();
@@ -514,6 +540,17 @@ export class MqttService implements OnModuleInit {
         },
       })
       .catch((error: unknown) => console.log(error));
+
+    let dataMonthWorkingDevices = [];
+
+    for (let i = 0; i < foundDevices.length; i++) {
+      for (let j = 0; i < dataMonthDay.length; j++) {
+        if (foundDevices[i].imei == dataMonthDay[j].imei) {
+          dataMonthWorkingDevices.push(foundDevices[i]);
+          break;
+        }
+      }
+    }
 
     // ONE YEAR
     let currentYearDate = new Date();
@@ -540,12 +577,23 @@ export class MqttService implements OnModuleInit {
       })
       .catch((error: unknown) => console.log(error));
 
-    return {
-      presentDay: dataPresent.length,
-      dataThreeDay: dataThreeDay.length,
-      dataTenDay: dataTenDay.length,
-      dataMonthDay: dataMonthDay.length,
-      dataYear: dataYear.length,
-    };
+      let dataYearWorkingDevices = [];
+
+      for (let i = 0; i < foundDevices.length; i++) {
+        for (let j = 0; i < dataYear.length; j++) {
+          if (foundDevices[i].imei == dataYear[j].imei) {
+            dataYearWorkingDevices.push(foundDevices[i]);
+            break;
+          }
+        }
+      }
+
+      return {
+        presentDay: dataPresentDayWorkingDevices.length,
+        dataThreeDay: dataThreeDayWorkingDevices.length,
+        dataTenDay: dataTenDayWorkingDevices.length,
+        dataMonthDay: dataMonthWorkingDevices.length,
+        dataYear: dataYearWorkingDevices.length,
+      };
   }
 }
