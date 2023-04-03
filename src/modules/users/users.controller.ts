@@ -13,6 +13,7 @@ import { UsersService } from './users.service';
 import { User } from './schemas/users.schema';
 import { createDto } from './dto/create.dto';
 import { updateDto } from './dto/update.dto';
+import { loginDto } from './dto/login';
 
 @Controller('users')
 export class UsersController {
@@ -31,7 +32,7 @@ export class UsersController {
 
   @HttpCode(HttpStatus.OK)
   @Post('login')
-  loginUser(@Body() body: createDto): Promise<string> {
+  loginUser(@Body() body: loginDto): Promise<string> {
     return this.service.loginUser(body);
   }
 

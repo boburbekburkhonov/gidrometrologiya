@@ -54,4 +54,29 @@ export class MqttController {
   getDataStaticsDevices(@Req() request: CustomeRequest): Promise<Data[]> {
     return this.service.getDataStaticsDevices(request.userId);
   }
+
+  @Get('data/devices/working/present')
+  getDataDevicesPresentDay(@Req() request: CustomeRequest): Promise<Data[]> {
+    return this.service.getDataDevicesPresentDay(request.userId);
+  }
+
+  @Get('data/devices/working/three')
+  getDataDevicesThreeDay(@Req() request: CustomeRequest): Promise<Data[]> {
+    return this.service.getDataDevicesThreeDay(request.userId);
+  }
+
+  @Get('data/devices/working/ten')
+  getDataDevicesTenDay(@Req() request: CustomeRequest): Promise<Data[]> {
+    return this.service.getDataDevicesTenDay(request.userId);
+  }
+
+  @Get('data/devices/working/month')
+  getDataDevicesMonth(@Req() request: CustomeRequest): Promise<Data[]> {
+    return this.service.getDataDevicesMonth(request.userId);
+  }
+
+  @Get('data/devices/working/year')
+  getDataDevicesYear(@Req() request: CustomeRequest): Promise<Data[]> {
+    return this.service.getDataDevicesYear(request.userId);
+  }
 }

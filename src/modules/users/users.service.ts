@@ -10,6 +10,7 @@ import { Model } from 'mongoose';
 import { createDto } from './dto/create.dto';
 import { updateDto } from './dto/update.dto';
 import { User, UserDocument } from './schemas/users.schema';
+import { loginDto } from './dto/login';
 
 @Injectable()
 export class UsersService {
@@ -23,17 +24,24 @@ export class UsersService {
     return await this.userModel.find();
   }
 
-  async loginUser(payload: createDto): Promise<string> {
+  async loginUser(payload: loginDto): Promise<any> {
     const existingUser = await this.userModel.findOne(payload);
 
     if (!existingUser) {
       throw new HttpException('User not found, Register', HttpStatus.OK);
     }
 
-    return this.jwtService.sign(existingUser._id.toString());
+    return {
+      access_token: this.jwtService.sign(existingUser._id.toString()),
+      role: existingUser.role,
+      name: existingUser.name,
+      username: existingUser.username,
+    };
   }
 
-  async registerUser(payload: createDto): Promise<string> {
+  async registerUser(payload: createDto): Promise<any> {
+    payload.role = 'user';
+
     const existingUser = await this.userModel.findOne(payload);
 
     if (existingUser) {
@@ -44,7 +52,9 @@ export class UsersService {
 
     await newUser.save();
 
-    return this.jwtService.sign(newUser._id.toString());
+    return {
+      access_token: this.jwtService.sign(newUser._id.toString()),
+    };
   }
 
   async updateUser(id: string, payload: updateDto): Promise<User> {

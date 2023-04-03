@@ -14,13 +14,31 @@ export class User {
     type: String,
     required: true,
   })
-  readonly username: String;
+  readonly name: string;
+
+  @Prop({
+    type: String,
+    required: true,
+  })
+  readonly username: string;
+
+  @Prop({
+    type: String,
+    required: true,
+  })
+  readonly email: String;
 
   @Prop({
     type: String,
     required: true,
   })
   readonly password: string;
+
+  @Prop({
+    type: String,
+    required: true,
+  })
+  readonly role: string;
 }
 
 export const userSchema = SchemaFactory.createForClass(User);

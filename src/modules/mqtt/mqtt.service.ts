@@ -577,23 +577,227 @@ export class MqttService implements OnModuleInit {
       })
       .catch((error: unknown) => console.log(error));
 
-      let dataYearWorkingDevices = [];
+    let dataYearWorkingDevices = [];
 
-      for (let i = 0; i < foundDevices.length; i++) {
-        for (let j = 0; i < dataYear.length; j++) {
-          if (foundDevices[i].imei == dataYear[j].imei) {
-            dataYearWorkingDevices.push(foundDevices[i]);
-            break;
-          }
+    for (let i = 0; i < foundDevices.length; i++) {
+      for (let j = 0; i < dataYear.length; j++) {
+        if (foundDevices[i].imei == dataYear[j].imei) {
+          dataYearWorkingDevices.push(foundDevices[i]);
+          break;
         }
       }
+    }
 
-      return {
-        presentDay: dataPresentDayWorkingDevices.length,
-        dataThreeDay: dataThreeDayWorkingDevices.length,
-        dataTenDay: dataTenDayWorkingDevices.length,
-        dataMonthDay: dataMonthWorkingDevices.length,
-        dataYear: dataYearWorkingDevices.length,
-      };
+    return {
+      presentDay: dataPresentDayWorkingDevices.length,
+      dataThreeDay: dataThreeDayWorkingDevices.length,
+      dataTenDay: dataTenDayWorkingDevices.length,
+      dataMonthDay: dataMonthWorkingDevices.length,
+      dataYear: dataYearWorkingDevices.length,
+    };
   }
+
+  // ! DATA DEVICES PRESENT DAY
+  async getDataDevicesPresentDay(userId: string): Promise<Data[]> {
+    const foundDevices: any = await this.infoService
+      .getInfoUserId(userId)
+      .catch((error: unknown) => console.log(error));
+
+    let date = new Date();
+    let currentPresentDate = new Date();
+    currentPresentDate.setHours(5);
+    currentPresentDate.setMinutes(0);
+    currentPresentDate.setSeconds(0);
+    date.setHours(date.getHours() + 5);
+
+    const dataPresent: any = await this.dataModel
+      .find({
+        user: userId,
+        time: {
+          $gte: currentPresentDate,
+          $lt: date,
+        },
+      })
+      .catch((error: unknown) => console.log(error));
+
+    let dataPresentDayWorkingDevices = [];
+
+    for (let i = 0; i < foundDevices.length; i++) {
+      for (let j = 0; i < dataPresent.length; j++) {
+        if (foundDevices[i].imei == dataPresent[j].imei) {
+          dataPresentDayWorkingDevices.push(foundDevices[i]);
+          break;
+        }
+      }
+    }
+
+    return dataPresentDayWorkingDevices;
+  }
+
+  // ! DATA DEVICES THREE DAY
+  async getDataDevicesThreeDay(userId: string): Promise<Data[]> {
+    const foundDevices: any = await this.infoService
+      .getInfoUserId(userId)
+      .catch((error: unknown) => console.log(error));
+
+    let currentThreeDate = new Date();
+    let threeDaysAgoDate = new Date();
+    threeDaysAgoDate.setDate(threeDaysAgoDate.getDate() - 3);
+    threeDaysAgoDate.setHours(5);
+    threeDaysAgoDate.setMinutes(0);
+    threeDaysAgoDate.setSeconds(0);
+    currentThreeDate.setHours(4);
+    currentThreeDate.setMinutes(59);
+    currentThreeDate.setSeconds(59);
+
+    const dataThreeDay: any = await this.dataModel
+      .find({
+        user: userId,
+        time: {
+          $gte: threeDaysAgoDate,
+          $lt: currentThreeDate,
+        },
+      })
+      .catch((error: unknown) => console.log(error));
+
+    let dataThreeDayWorkingDevices = [];
+
+    for (let i = 0; i < foundDevices.length; i++) {
+      for (let j = 0; i < dataThreeDay.length; j++) {
+        if (foundDevices[i].imei == dataThreeDay[j].imei) {
+          dataThreeDayWorkingDevices.push(foundDevices[i]);
+          break;
+        }
+      }
+    }
+
+    return dataThreeDayWorkingDevices;
+  }
+
+  // ! DATA DEVICES TEN DAY
+  async getDataDevicesTenDay(userId: string): Promise<Data[]> {
+    const foundDevices: any = await this.infoService
+      .getInfoUserId(userId)
+      .catch((error: unknown) => console.log(error));
+
+    let currentTenDate = new Date();
+    let tenDaysAgoDate = new Date();
+    tenDaysAgoDate.setDate(tenDaysAgoDate.getDate() - 10);
+    tenDaysAgoDate.setHours(5);
+    tenDaysAgoDate.setMinutes(0);
+    tenDaysAgoDate.setSeconds(0);
+    currentTenDate.setDate(currentTenDate.getDate() - 3);
+    currentTenDate.setHours(4);
+    currentTenDate.setMinutes(59);
+    currentTenDate.setSeconds(59);
+
+    const dataTenDay: any = await this.dataModel
+      .find({
+        time: {
+          $gte: tenDaysAgoDate,
+          $lt: currentTenDate,
+        },
+      })
+      .catch((error: unknown) => console.log(error));
+
+    let dataTenDayWorkingDevices = [];
+
+    for (let i = 0; i < foundDevices.length; i++) {
+      for (let j = 0; i < dataTenDay.length; j++) {
+        if (foundDevices[i].imei == dataTenDay[j].imei) {
+          dataTenDayWorkingDevices.push(foundDevices[i]);
+          break;
+        }
+      }
+    }
+
+    return dataTenDayWorkingDevices;
+  }
+
+  // ! DATA DEVICES MONTH
+  async getDataDevicesMonth(userId: string): Promise<Data[]>{
+    const foundDevices: any = await this.infoService
+      .getInfoUserId(userId)
+      .catch((error: unknown) => console.log(error));
+
+    let currentMonthDate = new Date();
+    let startMonthDate = new Date();
+
+    startMonthDate.setMonth(startMonthDate.getMonth() - 1);
+    startMonthDate.setDate(startMonthDate.getDate() - 11);
+    startMonthDate.setHours(5);
+    startMonthDate.setMinutes(0);
+    startMonthDate.setSeconds(0);
+    currentMonthDate.setDate(currentMonthDate.getDate() - 10);
+    currentMonthDate.setHours(4);
+    currentMonthDate.setMinutes(59);
+    currentMonthDate.setSeconds(59);
+
+    const dataMonthDay: any = await this.dataModel
+      .find({
+        time: {
+          $gte: startMonthDate,
+          $lt: currentMonthDate,
+        },
+      })
+      .catch((error: unknown) => console.log(error));
+
+    let dataMonthWorkingDevices = [];
+
+    for (let i = 0; i < foundDevices.length; i++) {
+      for (let j = 0; i < dataMonthDay.length; j++) {
+        if (foundDevices[i].imei == dataMonthDay[j].imei) {
+          dataMonthWorkingDevices.push(foundDevices[i]);
+          break;
+        }
+      }
+    }
+
+    return dataMonthWorkingDevices
+  }
+
+  // ! DATA DEVICES YEAR
+  async getDataDevicesYear(userId: string): Promise<Data[]> {
+    const foundDevices: any = await this.infoService
+      .getInfoUserId(userId)
+      .catch((error: unknown) => console.log(error));
+
+    let currentYearDate = new Date();
+    let startYearDate = new Date();
+
+    startYearDate.setFullYear(startYearDate.getFullYear() - 1);
+    startYearDate.setMonth(startYearDate.getMonth() - 1);
+    startYearDate.setDate(startYearDate.getDate() - 11);
+    startYearDate.setHours(5);
+    startYearDate.setMinutes(0);
+    startYearDate.setSeconds(0);
+    currentYearDate.setMonth(currentYearDate.getMonth() - 1);
+    currentYearDate.setDate(currentYearDate.getDate() - 11);
+    currentYearDate.setHours(4);
+    currentYearDate.setMinutes(59);
+    currentYearDate.setSeconds(59);
+
+    const dataYear: any = await this.dataModel
+      .find({
+        time: {
+          $gte: startYearDate,
+          $lt: currentYearDate,
+        },
+      })
+      .catch((error: unknown) => console.log(error));
+
+    let dataYearWorkingDevices = [];
+
+    for (let i = 0; i < foundDevices.length; i++) {
+      for (let j = 0; i < dataYear.length; j++) {
+        if (foundDevices[i].imei == dataYear[j].imei) {
+          dataYearWorkingDevices.push(foundDevices[i]);
+          break;
+        }
+      }
+    }
+
+    return dataYearWorkingDevices
+  }
+
 }
