@@ -20,6 +20,10 @@ export class UsersService {
     private readonly userModel: Model<UserDocument>,
   ) {}
 
+  async getUserId(userId: string): Promise<User[]> {
+    return await this.userModel.findOne({ _id: userId });
+  }
+
   async getUsers(): Promise<User[]> {
     return await this.userModel.find();
   }
@@ -34,8 +38,6 @@ export class UsersService {
     return {
       access_token: this.jwtService.sign(existingUser._id.toString()),
       role: existingUser.role,
-      name: existingUser.name,
-      username: existingUser.username,
     };
   }
 
@@ -55,6 +57,16 @@ export class UsersService {
     return {
       access_token: this.jwtService.sign(newUser._id.toString()),
     };
+  }
+
+  async updateUserProfile(id: string, payload: updateDto): Promise<User> {
+    const existingUser = await this.userModel
+      .findByIdAndUpdate({ _id: id }, payload)
+      .catch((err: unknown) => {
+        throw new NotFoundException('User not found');
+      });
+
+    return existingUser;
   }
 
   async updateUser(id: string, payload: updateDto): Promise<User> {
