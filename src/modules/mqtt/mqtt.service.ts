@@ -279,13 +279,30 @@ export class MqttService implements OnModuleInit {
       })
       .catch((error: unknown) => console.log(error));
 
-    return {
-      presentDay: dataPresent.length,
-      dataThreeDay: dataThreeDay.length,
-      dataTenDay: dataTenDay.length,
-      dataMonthDay: dataMonthDay.length,
-      dataYear: dataYear.length,
-    };
+    let resultData = [
+      {
+        name: 'PresentDay',
+        length: dataPresent.length,
+      },
+      {
+        name: 'DataThreeDay',
+        length: dataThreeDay.length,
+      },
+      {
+        name: 'DataTenDay',
+        length: dataTenDay.length,
+      },
+      {
+        name: 'DataMonthDay',
+        length: dataMonthDay.length,
+      },
+      {
+        name: 'DataYear',
+        length: dataYear.length,
+      },
+    ];
+
+    return resultData;
   }
 
   // ! DATA PRESENT DAY
@@ -446,7 +463,7 @@ export class MqttService implements OnModuleInit {
     let dataPresentDayWorkingDevices = [];
 
     for (let i = 0; i < foundDevices.length; i++) {
-      for (let j = 0; i < dataPresent.length; j++) {
+      for (let j = 0; j < dataPresent.length; j++) {
         if (foundDevices[i].imei == dataPresent[j].imei) {
           dataPresentDayWorkingDevices.push(foundDevices[i]);
           break;
@@ -478,7 +495,7 @@ export class MqttService implements OnModuleInit {
     let dataThreeDayWorkingDevices = [];
 
     for (let i = 0; i < foundDevices.length; i++) {
-      for (let j = 0; i < dataThreeDay.length; j++) {
+      for (let j = 0; j < dataThreeDay.length; j++) {
         if (foundDevices[i].imei == dataThreeDay[j].imei) {
           dataThreeDayWorkingDevices.push(foundDevices[i]);
           break;
@@ -510,7 +527,7 @@ export class MqttService implements OnModuleInit {
     let dataTenDayWorkingDevices = [];
 
     for (let i = 0; i < foundDevices.length; i++) {
-      for (let j = 0; i < dataTenDay.length; j++) {
+      for (let j = 0; j < dataTenDay.length; j++) {
         if (foundDevices[i].imei == dataTenDay[j].imei) {
           dataTenDayWorkingDevices.push(foundDevices[i]);
           break;
@@ -544,7 +561,7 @@ export class MqttService implements OnModuleInit {
     let dataMonthWorkingDevices = [];
 
     for (let i = 0; i < foundDevices.length; i++) {
-      for (let j = 0; i < dataMonthDay.length; j++) {
+      for (let j = 0; j < dataMonthDay.length; j++) {
         if (foundDevices[i].imei == dataMonthDay[j].imei) {
           dataMonthWorkingDevices.push(foundDevices[i]);
           break;
@@ -580,7 +597,7 @@ export class MqttService implements OnModuleInit {
     let dataYearWorkingDevices = [];
 
     for (let i = 0; i < foundDevices.length; i++) {
-      for (let j = 0; i < dataYear.length; j++) {
+      for (let j = 0; j < dataYear.length; j++) {
         if (foundDevices[i].imei == dataYear[j].imei) {
           dataYearWorkingDevices.push(foundDevices[i]);
           break;
@@ -623,7 +640,7 @@ export class MqttService implements OnModuleInit {
     let dataPresentDayWorkingDevices = [];
 
     for (let i = 0; i < foundDevices.length; i++) {
-      for (let j = 0; i < dataPresent.length; j++) {
+      for (let j = 0; j < dataPresent.length; j++) {
         if (foundDevices[i].imei == dataPresent[j].imei) {
           dataPresentDayWorkingDevices.push(foundDevices[i]);
           break;
@@ -663,7 +680,7 @@ export class MqttService implements OnModuleInit {
     let dataThreeDayWorkingDevices = [];
 
     for (let i = 0; i < foundDevices.length; i++) {
-      for (let j = 0; i < dataThreeDay.length; j++) {
+      for (let j = 0; j < dataThreeDay.length; j++) {
         if (foundDevices[i].imei == dataThreeDay[j].imei) {
           dataThreeDayWorkingDevices.push(foundDevices[i]);
           break;
@@ -703,7 +720,7 @@ export class MqttService implements OnModuleInit {
     let dataTenDayWorkingDevices = [];
 
     for (let i = 0; i < foundDevices.length; i++) {
-      for (let j = 0; i < dataTenDay.length; j++) {
+      for (let j = 0; j < dataTenDay.length; j++) {
         if (foundDevices[i].imei == dataTenDay[j].imei) {
           dataTenDayWorkingDevices.push(foundDevices[i]);
           break;
@@ -745,7 +762,7 @@ export class MqttService implements OnModuleInit {
     let dataMonthWorkingDevices = [];
 
     for (let i = 0; i < foundDevices.length; i++) {
-      for (let j = 0; i < dataMonthDay.length; j++) {
+      for (let j = 0; j < dataMonthDay.length; j++) {
         if (foundDevices[i].imei == dataMonthDay[j].imei) {
           dataMonthWorkingDevices.push(foundDevices[i]);
           break;
@@ -789,7 +806,7 @@ export class MqttService implements OnModuleInit {
     let dataYearWorkingDevices = [];
 
     for (let i = 0; i < foundDevices.length; i++) {
-      for (let j = 0; i < dataYear.length; j++) {
+      for (let j = 0; j < dataYear.length; j++) {
         if (foundDevices[i].imei == dataYear[j].imei) {
           dataYearWorkingDevices.push(foundDevices[i]);
           break;
