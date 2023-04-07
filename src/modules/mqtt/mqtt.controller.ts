@@ -1,4 +1,4 @@
-import { Controller, Get, Req, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, Req, UseGuards } from '@nestjs/common';
 import { CustomeRequest } from '../../types';
 import { JwtGuard } from '../users/guards/jwt.guard';
 import { MqttService } from './mqtt.service';
@@ -13,6 +13,14 @@ export class MqttController {
   @Get('lastdata')
   getLastData(@Req() request: CustomeRequest): Promise<LastData[]> {
     return this.service.getLastData(request.userId);
+  }
+
+  @Get('lastdata/:imei')
+  getLastDataImei(
+    @Req() request: CustomeRequest,
+    @Param('imei') imei: number,
+  ): Promise<LastData[]> {
+    return this.service.getLastDataImei(request.userId, imei);
   }
 
   @Get('data')

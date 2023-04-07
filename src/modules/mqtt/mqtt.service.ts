@@ -54,7 +54,7 @@ export class MqttService implements OnModuleInit {
               data.i,
             );
 
-            console.log(data);
+            console.log(existingInfo);
 
             if (existingInfo) {
               const timeData = new Date(
@@ -79,6 +79,7 @@ export class MqttService implements OnModuleInit {
 
               if (!filterData) {
                 const newData = new this.dataModel({
+                  name: existingInfo.name,
                   imei: data.i,
                   time: timeData,
                   windDirection: Number(data.wd) / 10,
@@ -105,6 +106,7 @@ export class MqttService implements OnModuleInit {
                   await this.lastDataModel.findOneAndUpdate(
                     { imei: data.i },
                     {
+                      name: existingInfo.name,
                       imei: data.i,
                       time: timeData,
                       windDirection: Number(data.wd) / 10,
@@ -123,6 +125,7 @@ export class MqttService implements OnModuleInit {
                   );
                 } else {
                   const newLastData = new this.lastDataModel({
+                    name: existingInfo.name,
                     imei: data.i,
                     time: timeData,
                     windDirection: Number(data.wd) / 10,
@@ -153,11 +156,12 @@ export class MqttService implements OnModuleInit {
 
   //! LASTDATA
   async getLastData(userId: string): Promise<LastData[]> {
-    return await this.lastDataModel
-      .find({ user: userId })
-      .select(
-        'imei time windDirection rainHeight windSpeed airHumidity airTemp airPressure soilHumidity soilTemp leafHumidity leafTemp typeSensor',
-      );
+    return await this.lastDataModel.find({ user: userId });
+  }
+
+  //! LASTDATA WITH IMEI
+  async getLastDataImei(userId: string, imei: number): Promise<LastData[]> {
+    return await this.lastDataModel.find({ user: userId, imei: imei });
   }
 
   //! DATA
@@ -224,6 +228,7 @@ export class MqttService implements OnModuleInit {
 
     const dataTenDay: any = await this.dataModel
       .find({
+        user: userId,
         time: {
           $gte: tenDaysAgoDate,
           $lt: currentTenDate,
@@ -247,6 +252,7 @@ export class MqttService implements OnModuleInit {
 
     const dataMonthDay: any = await this.dataModel
       .find({
+        user: userId,
         time: {
           $gte: startMonthDate,
           $lt: currentMonthDate,
@@ -272,6 +278,8 @@ export class MqttService implements OnModuleInit {
 
     const dataYear: any = await this.dataModel
       .find({
+        user: userId,
+
         time: {
           $gte: startYearDate,
           $lt: currentYearDate,
@@ -370,6 +378,7 @@ export class MqttService implements OnModuleInit {
 
     const dataTenDay: any = await this.dataModel
       .find({
+        user: userId,
         time: {
           $gte: tenDaysAgoDate,
           $lt: currentTenDate,
@@ -397,6 +406,7 @@ export class MqttService implements OnModuleInit {
 
     const dataMonthDay: any = await this.dataModel
       .find({
+        user: userId,
         time: {
           $gte: startMonthDate,
           $lt: currentMonthDate,
@@ -426,6 +436,7 @@ export class MqttService implements OnModuleInit {
 
     const dataYear: any = await this.dataModel
       .find({
+        user: userId,
         time: {
           $gte: startYearDate,
           $lt: currentYearDate,
@@ -517,6 +528,7 @@ export class MqttService implements OnModuleInit {
 
     const dataTenDay: any = await this.dataModel
       .find({
+        user: userId,
         time: {
           $gte: tenDaysAgoDate,
           $lt: currentTenDate,
@@ -551,6 +563,7 @@ export class MqttService implements OnModuleInit {
 
     const dataMonthDay: any = await this.dataModel
       .find({
+        user: userId,
         time: {
           $gte: startMonthDate,
           $lt: currentMonthDate,
@@ -587,6 +600,7 @@ export class MqttService implements OnModuleInit {
 
     const dataYear: any = await this.dataModel
       .find({
+        user: userId,
         time: {
           $gte: startYearDate,
           $lt: currentYearDate,
@@ -710,6 +724,7 @@ export class MqttService implements OnModuleInit {
 
     const dataTenDay: any = await this.dataModel
       .find({
+        user: userId,
         time: {
           $gte: tenDaysAgoDate,
           $lt: currentTenDate,
@@ -732,7 +747,7 @@ export class MqttService implements OnModuleInit {
   }
 
   // ! DATA DEVICES MONTH
-  async getDataDevicesMonth(userId: string): Promise<Data[]>{
+  async getDataDevicesMonth(userId: string): Promise<Data[]> {
     const foundDevices: any = await this.infoService
       .getInfoUserId(userId)
       .catch((error: unknown) => console.log(error));
@@ -752,6 +767,7 @@ export class MqttService implements OnModuleInit {
 
     const dataMonthDay: any = await this.dataModel
       .find({
+        user: userId,
         time: {
           $gte: startMonthDate,
           $lt: currentMonthDate,
@@ -770,7 +786,7 @@ export class MqttService implements OnModuleInit {
       }
     }
 
-    return dataMonthWorkingDevices
+    return dataMonthWorkingDevices;
   }
 
   // ! DATA DEVICES YEAR
@@ -796,6 +812,7 @@ export class MqttService implements OnModuleInit {
 
     const dataYear: any = await this.dataModel
       .find({
+        user: userId,
         time: {
           $gte: startYearDate,
           $lt: currentYearDate,
@@ -814,7 +831,6 @@ export class MqttService implements OnModuleInit {
       }
     }
 
-    return dataYearWorkingDevices
+    return dataYearWorkingDevices;
   }
-
 }

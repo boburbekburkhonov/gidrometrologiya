@@ -11,6 +11,12 @@ export class LastData {
   readonly id: String;
 
   @Prop({
+    type: String,
+    required: true,
+  })
+  readonly name: string;
+
+  @Prop({
     type: Number,
     required: true,
   })
