@@ -1,9 +1,20 @@
-import { Controller, Get, Param, Req, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { CustomeRequest } from '../../types';
 import { JwtGuard } from '../users/guards/jwt.guard';
 import { MqttService } from './mqtt.service';
 import { LastData } from './schemas/lastData.schema';
 import { Data } from './schemas/data.schema';
+import { filterDto } from './dto/filter.data.dto';
 
 @UseGuards(JwtGuard)
 @Controller('mqtt')
@@ -86,5 +97,14 @@ export class MqttController {
   @Get('data/devices/working/year')
   getDataDevicesYear(@Req() request: CustomeRequest): Promise<Data[]> {
     return this.service.getDataDevicesYear(request.userId);
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @Post('/filter/data')
+  getDataFilter(
+    @Req() request: CustomeRequest,
+    @Body() body: filterDto,
+  ): Promise<Data[]> {
+    return this.service.getDataFilter(request.userId, body);
   }
 }

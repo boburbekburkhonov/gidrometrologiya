@@ -6,6 +6,7 @@ import { InfoService } from 'src/modules/info/info.service';
 import { Model } from 'mongoose';
 import { Data, dataDocument } from './schemas/data.schema';
 import { LastData, lastDataDocument } from './schemas/lastData.schema';
+import { filterDto } from './dto/filter.data.dto';
 
 @Injectable()
 export class MqttService implements OnModuleInit {
@@ -832,5 +833,26 @@ export class MqttService implements OnModuleInit {
     }
 
     return dataYearWorkingDevices;
+  }
+
+  // ! DATA FILTER WITH START & END
+  async getDataFilter(userId: string, payload: filterDto): Promise<Data[]> {
+    const startDate = new Date(payload.start);
+    const endDate = new Date(payload.end);
+
+    startDate.setHours(5);
+    endDate.setHours(4);
+    endDate.setMinutes(59);
+    endDate.setSeconds(59);
+
+    const filterData = await this.dataModel.find({
+      user: userId,
+      time: {
+        $gte: startDate,
+        $lt: endDate,
+      },
+    });
+
+    return filterData;
   }
 }
