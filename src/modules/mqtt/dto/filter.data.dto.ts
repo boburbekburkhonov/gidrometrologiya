@@ -8,4 +8,8 @@ export class filterDto {
   @IsString()
   @IsNotEmpty()
   readonly end: string;
+
+  @IsString()
+  @IsNotEmpty()
+  readonly deviceName: string;
 }

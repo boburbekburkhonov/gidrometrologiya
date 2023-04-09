@@ -167,11 +167,10 @@ export class MqttService implements OnModuleInit {
 
   //! DATA
   async getData(userId: string): Promise<Data[]> {
-    return await this.dataModel
-      .find({ user: userId })
-      .select(
-        'imei time windDirection rainHeight windSpeed airHumidity airTemp airPressure soilHumidity soilTemp leafHumidity leafTemp typeSensor',
-      );
+    return await this.dataModel.aggregate([
+      { $match: { user: userId } },
+      { $unset: ['_id'] },
+    ]);
   }
 
   // ! DATA STATISTICS
@@ -845,13 +844,26 @@ export class MqttService implements OnModuleInit {
     endDate.setMinutes(59);
     endDate.setSeconds(59);
 
-    const filterData = await this.dataModel.find({
-      user: userId,
-      time: {
-        $gte: startDate,
-        $lt: endDate,
-      },
-    });
+    let filterData: any;
+
+    if (payload.deviceName == 'All') {
+      filterData = await this.dataModel.find({
+        user: userId,
+        time: {
+          $gte: startDate,
+          $lt: endDate,
+        },
+      });
+    } else {
+      filterData = await this.dataModel.find({
+        user: userId,
+        typeSensor: payload.deviceName,
+        time: {
+          $gte: startDate,
+          $lt: endDate,
+        },
+      });
+    }
 
     return filterData;
   }
