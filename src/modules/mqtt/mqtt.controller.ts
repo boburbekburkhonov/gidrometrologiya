@@ -21,6 +21,7 @@ import { filterDto } from './dto/filter.data.dto';
 export class MqttController {
   constructor(private readonly service: MqttService) {}
 
+  // ! FOR THE USER
   @Get('lastdata')
   getLastData(@Req() request: CustomeRequest): Promise<LastData[]> {
     return this.service.getLastData(request.userId);
@@ -106,5 +107,63 @@ export class MqttController {
     @Body() body: filterDto,
   ): Promise<Data[]> {
     return this.service.getDataFilter(request.userId, body);
+  }
+
+  // ! FOR THE ADMIN
+
+  @Get('admin/data')
+  getDataAdmin(): Promise<Data[]> {
+    return this.service.getDataAdmin();
+  }
+
+  @Get('admin/lastdata')
+  getLastDataAdmin(): Promise<LastData[]> {
+    return this.service.getLastDataAdmin();
+  }
+
+  @Get('admin/lastdata/:imei')
+  getLastDataImeiAdmin(@Param('imei') imei: number): Promise<LastData[]> {
+    return this.service.getLastDataImeiAdmin(imei);
+  }
+
+  @Get('admin/data/statistics/devices')
+  getDataStaticsDevicesAdmin(): Promise<Data[]> {
+    return this.service.getDataStaticsDevicesAdmin();
+  }
+
+  @Get('/admin/data/statistics')
+  getDataStaticsAdmin(): Promise<Data[]> {
+    return this.service.getDataStaticsAdmin();
+  }
+
+  @Get('admin/data/devices/working/present')
+  getDataDevicesPresentDayAdmin(): Promise<Data[]> {
+    return this.service.getDataDevicesPresentDayAdmin();
+  }
+
+  @Get('admin/data/devices/working/three')
+  getDataDevicesThreeDayAdmin(): Promise<Data[]> {
+    return this.service.getDataDevicesThreeDayAdmin();
+  }
+
+  @Get('admin/data/devices/working/ten')
+  getDataDevicesTenDayAdmin(): Promise<Data[]> {
+    return this.service.getDataDevicesTenDayAdmin();
+  }
+
+  @Get('admin/data/devices/working/month')
+  getDataDevicesMonthAdmin(): Promise<Data[]> {
+    return this.service.getDataDevicesMonthAdmin();
+  }
+
+  @Get('admin/data/devices/working/year')
+  getDataDevicesYearAdmin(): Promise<Data[]> {
+    return this.service.getDataDevicesYearAdmin();
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @Post('/admin/filter/data')
+  getDataFilterAdmin(@Body() body: filterDto): Promise<Data[]> {
+    return this.service.getDataFilterAdmin(body);
   }
 }
