@@ -289,23 +289,23 @@ export class MqttService implements OnModuleInit {
 
     let resultData = [
       {
-        name: 'PresentDay',
+        name: 'Bugun',
         length: dataPresent.length,
       },
       {
-        name: 'DataThreeDay',
+        name: 'Uch kunlik',
         length: dataThreeDay.length,
       },
       {
-        name: 'DataTenDay',
+        name: "O'n kunlik",
         length: dataTenDay.length,
       },
       {
-        name: 'DataMonthDay',
+        name: 'Bir oylik',
         length: dataMonthDay.length,
       },
       {
-        name: 'DataYear',
+        name: 'Bir yillik',
         length: dataYear.length,
       },
     ];
@@ -1171,23 +1171,23 @@ export class MqttService implements OnModuleInit {
 
     let resultData = [
       {
-        name: 'PresentDay',
+        name: 'Bugungi',
         length: dataPresent.length,
       },
       {
-        name: 'DataThreeDay',
+        name: 'Uch kunlik',
         length: dataThreeDay.length,
       },
       {
-        name: 'DataTenDay',
+        name: "O'n kunlik",
         length: dataTenDay.length,
       },
       {
-        name: 'DataMonthDay',
+        name: 'Bir oylik',
         length: dataMonthDay.length,
       },
       {
-        name: 'DataYear',
+        name: 'Bir yillik',
         length: dataYear.length,
       },
     ];
