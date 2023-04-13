@@ -1,4 +1,9 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  OnModuleInit,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import * as mqtt from 'mqtt';
 import { IMqttConnectOptions } from '../../types';
@@ -173,6 +178,11 @@ export class MqttService implements OnModuleInit {
     ]);
   }
 
+  //! DATA WITH IMEI
+  async getDataImei(userId: string, imei: string): Promise<Data[]> {
+    return await this.dataModel.find({ user: userId, imei: imei });
+  }
+
   // ! DATA STATISTICS
   async getDataStatics(userId: string): Promise<any> {
     // PRESENT  DAYS
@@ -331,7 +341,7 @@ export class MqttService implements OnModuleInit {
         },
       })
       .select(
-        'imei time windDirection rainHeight windSpeed airHumidity airTemp airPressure soilHumidity soilTemp leafHumidity leafTemp typeSensor',
+        'imei name time windDirection rainHeight windSpeed airHumidity airTemp airPressure soilHumidity soilTemp leafHumidity leafTemp typeSensor',
       )
       .catch((error: unknown) => console.log(error));
 
@@ -873,6 +883,35 @@ export class MqttService implements OnModuleInit {
   //! DATA
   async getDataAdmin(): Promise<Data[]> {
     return await this.dataModel.aggregate([{ $unset: ['_id'] }]);
+  }
+
+  //! DATA WITH IMEI
+  async getDataImeiAdmin(imei: string): Promise<Data[]> {
+    return await this.dataModel.find({imei: imei });
+  }
+
+  // ! DATA PRESENT DAY
+  async getDataPresentDayAdmin(): Promise<Data[]> {
+    let date = new Date();
+    let currentPresentDate = new Date();
+    currentPresentDate.setHours(5);
+    currentPresentDate.setMinutes(0);
+    currentPresentDate.setSeconds(0);
+    date.setHours(date.getHours() + 5);
+
+    const dataPresent: any = await this.dataModel
+      .find({
+        time: {
+          $gte: currentPresentDate,
+          $lt: date,
+        },
+      })
+      .select(
+        'imei name time windDirection rainHeight windSpeed airHumidity airTemp airPressure soilHumidity soilTemp leafHumidity leafTemp typeSensor',
+      )
+      .catch((error: unknown) => console.log(error));
+
+    return dataPresent;
   }
 
   //! LASTDATA

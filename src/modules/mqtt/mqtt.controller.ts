@@ -40,6 +40,14 @@ export class MqttController {
     return this.service.getData(request.userId);
   }
 
+  @Get('data/imei/:imei')
+  getDataImei(
+    @Req() request: CustomeRequest,
+    @Param('imei') imei: string,
+  ): Promise<Data[]> {
+    return this.service.getDataImei(request.userId, imei);
+  }
+
   @Get('data/statistics')
   getDataStatics(@Req() request: CustomeRequest): Promise<Data[]> {
     return this.service.getDataStatics(request.userId);
@@ -114,6 +122,16 @@ export class MqttController {
   @Get('admin/data')
   getDataAdmin(): Promise<Data[]> {
     return this.service.getDataAdmin();
+  }
+
+  @Get('admin/data/imei/:imei')
+  getDataImeiAdmin(@Param('imei') imei: string): Promise<Data[]> {
+    return this.service.getDataImeiAdmin(imei);
+  }
+
+  @Get('admin/data/present')
+  getDataPresentDayAdmin(): Promise<Data[]> {
+    return this.service.getDataPresentDayAdmin();
   }
 
   @Get('admin/lastdata')
