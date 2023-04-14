@@ -21,6 +21,9 @@ import { MqttModule } from './modules/mqtt/mqtt.module';
     MongooseModule.forRoot('mongodb://127.0.0.1:27017/n37', {
       connectionName: 'LastData',
     }),
+    MongooseModule.forRoot('mongodb://127.0.0.1:27017/n37', {
+      connectionName: 'YesterdayData',
+    }),
     UsersModule,
     InfoModule,
     MqttModule,

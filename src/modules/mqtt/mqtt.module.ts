@@ -6,13 +6,16 @@ import { MqttService } from './mqtt.service';
 import { Data, dataSchema } from './schemas/data.schema';
 import { LastData, lastDataSchema } from './schemas/lastData.schema';
 import { MqttController } from './mqtt.controller';
+import {
+  YesterdayData,
+  yesterdayDataSchema,
+} from './schemas/yesterdayData.schema';
 
 @Module({
   imports: [
     MongooseModule.forFeature(
       [
         {
-
           name: Info.name,
           schema: infoSchema,
         },
@@ -36,6 +39,15 @@ import { MqttController } from './mqtt.controller';
         },
       ],
       'LastData',
+    ),
+    MongooseModule.forFeature(
+      [
+        {
+          name: YesterdayData.name,
+          schema: yesterdayDataSchema,
+        },
+      ],
+      'YesterdayData',
     ),
   ],
   providers: [InfoService, MqttService],
