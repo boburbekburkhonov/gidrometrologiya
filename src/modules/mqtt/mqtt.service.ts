@@ -1,7 +1,6 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import * as mqtt from 'mqtt';
-import { schedule } from 'node-cron';
 import { IMqttConnectOptions } from '../../types';
 import { InfoService } from 'src/modules/info/info.service';
 import { Model } from 'mongoose';
@@ -12,6 +11,10 @@ import {
   YesterdayData,
   yesterdayDataDocument,
 } from './schemas/yesterdayData.schema';
+import {
+  YesterdayDataStatistic,
+  yesterdayDataStatisticDocument,
+} from './schemas/yesterdayDataStatistic.schema';
 
 @Injectable()
 export class MqttService implements OnModuleInit {
@@ -23,6 +26,8 @@ export class MqttService implements OnModuleInit {
     private readonly lastDataModel: Model<lastDataDocument>,
     @InjectModel(YesterdayData.name, 'YesterdayData')
     private readonly yesterdayDataModel: Model<yesterdayDataDocument>,
+    @InjectModel(YesterdayDataStatistic.name, 'YesterdayDataStatistic')
+    private readonly yesterdayDataStatisticModel: Model<yesterdayDataStatisticDocument>,
   ) {}
 
   private options: IMqttConnectOptions = {
@@ -40,66 +45,6 @@ export class MqttService implements OnModuleInit {
 
   // !MQTT CONNECT
   onModuleInit() {
-    // YESTERDAY DATA WITH CRON
-    schedule('00 00 * * *', async (): Promise<void> => {
-      const timePresentStart: Date = new Date();
-      const timePresentEnd: Date = new Date();
-      const timeYesterdayStart: Date = new Date();
-      const timeYesterdayEnd: Date = new Date();
-
-      timeYesterdayStart.setHours(5);
-      timeYesterdayStart.setMinutes(0);
-      timeYesterdayStart.setSeconds(0);
-      timeYesterdayStart.setDate(timeYesterdayStart.getDate() - 1);
-      timeYesterdayEnd.setHours(4);
-      timeYesterdayEnd.setMinutes(59);
-      timeYesterdayEnd.setSeconds(59);
-
-      timePresentStart.setHours(5);
-      timePresentStart.setMinutes(0);
-      timePresentStart.setSeconds(0);
-      timePresentEnd.setHours(4);
-      timePresentEnd.setMinutes(59);
-      timePresentEnd.setSeconds(59);
-      timePresentEnd.setDate(timePresentEnd.getDate() + 1);
-
-      const foundPresentData = await this.dataModel.find({
-        time: {
-          $gte: timePresentStart,
-          $lt: timePresentEnd,
-        },
-      });
-
-      await this.yesterdayDataModel.deleteMany({
-        time: {
-          $gte: timeYesterdayStart,
-          $lt: timeYesterdayEnd,
-        },
-      });
-
-      foundPresentData.forEach(async (e) => {
-        const yesterdayData = new this.yesterdayDataModel({
-          name: e.name,
-          imei: e.imei,
-          time: e.time,
-          windDirection: e.windDirection,
-          rainHeight: e.rainHeight,
-          windSpeed: e.windSpeed,
-          airHumidity: e.airHumidity,
-          airTemp: e.airTemp,
-          airPressure: e.airPressure,
-          soilHumidity: e.soilHumidity,
-          soilTemp: e.soilTemp,
-          leafHumidity: e.leafHumidity,
-          leafTemp: e.leafTemp,
-          typeSensor: e.typeSensor,
-          user: e.user,
-        });
-
-        await yesterdayData.save();
-      });
-    });
-
     this.mqttClient = mqtt.connect(this.options);
 
     this.mqttClient.on('connect', (): void => {
@@ -940,6 +885,11 @@ export class MqttService implements OnModuleInit {
     return filterData;
   }
 
+  // ! YESTERDAY DATA STATISTICS
+  async getYesterdayData(userId: string): Promise<YesterdayData[]> {
+    return await this.yesterdayDataModel.find({ user: userId });
+  }
+
   // ? ADMIN ----------------------------------------------------------
 
   //! DATA
@@ -1527,5 +1477,10 @@ export class MqttService implements OnModuleInit {
     }
 
     return filterData;
+  }
+
+  // ! YESTERDAY DATA STATISTICS
+  async getYesterdayDataAdmin(): Promise<YesterdayData[]> {
+    return await this.yesterdayDataModel.find();
   }
 }

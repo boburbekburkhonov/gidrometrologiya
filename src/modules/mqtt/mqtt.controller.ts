@@ -117,6 +117,11 @@ export class MqttController {
     return this.service.getDataFilter(request.userId, body);
   }
 
+  @Get('yesterday/data')
+  getYesterdayData(@Req() request: CustomeRequest): Promise<LastData[]> {
+    return this.service.getYesterdayData(request.userId);
+  }
+
   // ! FOR THE ADMIN
 
   @Get('admin/data')
@@ -183,5 +188,10 @@ export class MqttController {
   @Post('/admin/filter/data')
   getDataFilterAdmin(@Body() body: filterDto): Promise<Data[]> {
     return this.service.getDataFilterAdmin(body);
+  }
+
+  @Get('admin/yesterday/data')
+  getYesterdayDataAdmin(@Req() request: CustomeRequest): Promise<LastData[]> {
+    return this.service.getYesterdayDataAdmin();
   }
 }

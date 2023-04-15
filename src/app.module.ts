@@ -5,6 +5,7 @@ import { config } from './config';
 import { UsersModule } from './modules/users/users.module';
 import { InfoModule } from './modules/info/info.module';
 import { MqttModule } from './modules/mqtt/mqtt.module';
+import { CronService } from './modules/mqtt/cron.service';
 
 @Module({
   imports: [
@@ -23,6 +24,9 @@ import { MqttModule } from './modules/mqtt/mqtt.module';
     }),
     MongooseModule.forRoot('mongodb://127.0.0.1:27017/n37', {
       connectionName: 'YesterdayData',
+    }),
+    MongooseModule.forRoot('mongodb://127.0.0.1:27017/n37', {
+      connectionName: 'YesterdayDataStatistic',
     }),
     UsersModule,
     InfoModule,
