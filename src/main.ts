@@ -14,6 +14,6 @@ async function bootstrap() {
   const host = config.getOrThrow<string>('app.host');
   const port = config.getOrThrow<string>('app.port');
 
-  await app.listen(port, host);
+  await app.listen(port);
 }
 bootstrap();
