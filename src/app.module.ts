@@ -10,24 +10,42 @@ import { CronService } from './modules/mqtt/cron.service';
 @Module({
   imports: [
     ConfigModule.forRoot(config),
-    MongooseModule.forRoot('mongodb://127.0.0.1:27017/n37', {
-      connectionName: 'User',
-    }),
-    MongooseModule.forRoot('mongodb://127.0.0.1:27017/n37', {
-      connectionName: 'Info',
-    }),
-    MongooseModule.forRoot('mongodb://127.0.0.1:27017/n37', {
-      connectionName: 'Data',
-    }),
-    MongooseModule.forRoot('mongodb://127.0.0.1:27017/n37', {
-      connectionName: 'LastData',
-    }),
-    MongooseModule.forRoot('mongodb://127.0.0.1:27017/n37', {
-      connectionName: 'YesterdayData',
-    }),
-    MongooseModule.forRoot('mongodb://127.0.0.1:27017/n37', {
-      connectionName: 'YesterdayDataStatistic',
-    }),
+    MongooseModule.forRoot(
+      'mongodb+srv://Boburbek:boburbek0119@cluster0.1i98rks.mongodb.net/mqtt',
+      {
+        connectionName: 'User',
+      },
+    ),
+    MongooseModule.forRoot(
+      'mongodb+srv://Boburbek:boburbek0119@cluster0.1i98rks.mongodb.net/mqtt',
+      {
+        connectionName: 'Info',
+      },
+    ),
+    MongooseModule.forRoot(
+      'mongodb+srv://Boburbek:boburbek0119@cluster0.1i98rks.mongodb.net/mqtt',
+      {
+        connectionName: 'Data',
+      },
+    ),
+    MongooseModule.forRoot(
+      'mongodb+srv://Boburbek:boburbek0119@cluster0.1i98rks.mongodb.net/mqtt',
+      {
+        connectionName: 'LastData',
+      },
+    ),
+    MongooseModule.forRoot(
+      'mongodb+srv://Boburbek:boburbek0119@cluster0.1i98rks.mongodb.net/mqtt',
+      {
+        connectionName: 'YesterdayData',
+      },
+    ),
+    MongooseModule.forRoot(
+      'mongodb+srv://Boburbek:boburbek0119@cluster0.1i98rks.mongodb.net/mqtt',
+      {
+        connectionName: 'YesterdayDataStatistic',
+      },
+    ),
     UsersModule,
     InfoModule,
     MqttModule,
