@@ -122,6 +122,21 @@ export class MqttController {
     return this.service.getYesterdayData(request.userId);
   }
 
+  @Get('yesterday/data/statistics')
+  getYesterdayDataStatistics(
+    @Req() request: CustomeRequest,
+  ): Promise<LastData[]> {
+    return this.service.getYesterdayDataStatistics(request.userId);
+  }
+
+  @Get('yesterday/data/statistics/devices/:time')
+  getYesterdayDataStatisticsDevices(
+    @Req() request: CustomeRequest,
+    @Param('time') time: string,
+  ): Promise<LastData[]> {
+    return this.service.getYesterdayDataStatisticsDevices(request.userId, time);
+  }
+
   // ! FOR THE ADMIN
 
   @Get('admin/data')
@@ -191,7 +206,19 @@ export class MqttController {
   }
 
   @Get('admin/yesterday/data')
-  getYesterdayDataAdmin(@Req() request: CustomeRequest): Promise<LastData[]> {
+  getYesterdayDataAdmin(): Promise<LastData[]> {
     return this.service.getYesterdayDataAdmin();
+  }
+
+  @Get('admin/yesterday/data/statistics')
+  getYesterdayDataStatisticsAdmin(): Promise<LastData[]> {
+    return this.service.getYesterdayDataStatisticsAdmin();
+  }
+
+  @Get('admin/yesterday/data/statistics/devices/:time')
+  getYesterdayDataStatisticsDevicesAdmin(
+    @Param('time') time: string,
+  ): Promise<LastData[]> {
+    return this.service.getYesterdayDataStatisticsDevicesAdmin(time);
   }
 }

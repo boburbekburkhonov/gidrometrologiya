@@ -23,7 +23,7 @@ export class CronService {
     private readonly yesterdayDataStatisticModel: Model<yesterdayDataStatisticDocument>,
   ) {}
 
-  @Cron('29 15 * * *')
+  @Cron('00 00 * * *')
   async yesterdayData() {
     const timePresentStart: Date = new Date();
     const timePresentEnd: Date = new Date();
@@ -94,16 +94,16 @@ export class CronService {
         name: e.name ? e.name : 'testing',
         imei: e.imei,
         time: e.time,
-        windDirection: e.windDirection,
-        rainHeight: e.rainHeight,
-        windSpeed: e.windSpeed,
-        airHumidity: e.airHumidity,
-        airTemp: e.airTemp,
-        airPressure: e.airPressure,
-        soilHumidity: e.soilHumidity,
-        soilTemp: e.soilTemp,
-        leafHumidity: e.leafHumidity,
-        leafTemp: e.leafTemp,
+        windDirection: e.windDirection.toFixed(2),
+        rainHeight: e.rainHeight.toFixed(2),
+        windSpeed: e.windSpeed.toFixed(2),
+        airHumidity: e.airHumidity.toFixed(2),
+        airTemp: e.airTemp.toFixed(2),
+        airPressure: e.airPressure.toFixed(2),
+        soilHumidity: e.soilHumidity.toFixed(2),
+        soilTemp: e.soilTemp.toFixed(2),
+        leafHumidity: e.leafHumidity.toFixed(2),
+        leafTemp: e.leafTemp.toFixed(2),
         typeSensor: e.typeSensor,
         user: e.user,
       });

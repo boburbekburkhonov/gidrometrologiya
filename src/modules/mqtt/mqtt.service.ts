@@ -885,9 +885,34 @@ export class MqttService implements OnModuleInit {
     return filterData;
   }
 
-  // ! YESTERDAY DATA STATISTICS
+  // ! YESTERDAY DATA
   async getYesterdayData(userId: string): Promise<YesterdayData[]> {
     return await this.yesterdayDataModel.find({ user: userId });
+  }
+
+  // ! YESTERDAY DATA STATISTICS
+  async getYesterdayDataStatistics(
+    userId: string,
+  ): Promise<YesterdayDataStatistic[]> {
+    return await this.yesterdayDataStatisticModel.find({ user: userId });
+  }
+
+  // ! YESTERDAY DATA STATISTICS DEVICES
+  async getYesterdayDataStatisticsDevices(
+    userId: string,
+    time: string,
+  ): Promise<YesterdayDataStatistic[]> {
+    const timeArray = new Date(time).toLocaleString().split('/');
+
+    return await this.yesterdayDataStatisticModel.find({
+      user: userId,
+      time: {
+        $gte: `${timeArray[2].slice(0, 4)}-${timeArray[0]}-${timeArray[1]}`,
+        $lt: `${timeArray[2].slice(0, 4)}-${timeArray[0]}-${
+          Number(timeArray[1]) + 1
+        }`,
+      },
+    });
   }
 
   // ? ADMIN ----------------------------------------------------------
@@ -1479,8 +1504,29 @@ export class MqttService implements OnModuleInit {
     return filterData;
   }
 
-  // ! YESTERDAY DATA STATISTICS
+  // ! YESTERDAY DATA
   async getYesterdayDataAdmin(): Promise<YesterdayData[]> {
     return await this.yesterdayDataModel.find();
+  }
+
+  // ! YESTERDAY DATA STATISTICS
+  async getYesterdayDataStatisticsAdmin(): Promise<YesterdayDataStatistic[]> {
+    return await this.yesterdayDataStatisticModel.find();
+  }
+
+  // ! YESTERDAY DATA STATISTICS DEVICES
+  async getYesterdayDataStatisticsDevicesAdmin(
+    time: string,
+  ): Promise<YesterdayDataStatistic[]> {
+    const timeArray = new Date(time).toLocaleString().split('/');
+
+    return await this.yesterdayDataStatisticModel.find({
+      time: {
+        $gte: `${timeArray[2].slice(0, 4)}-${timeArray[0]}-${timeArray[1]}`,
+        $lt: `${timeArray[2].slice(0, 4)}-${timeArray[0]}-${
+          Number(timeArray[1]) + 1
+        }`,
+      },
+    });
   }
 }
