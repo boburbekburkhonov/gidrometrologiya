@@ -10,22 +10,22 @@ import { CronService } from './modules/mqtt/cron.service';
 @Module({
   imports: [
     ConfigModule.forRoot(config),
-    MongooseModule.forRoot('mongodb://127.0.0.1:27017/mqtt', {
+    MongooseModule.forRoot('mongodb://127.0.0.1:27017/mydb', {
       connectionName: 'User',
     }),
-    MongooseModule.forRoot('mongodb://127.0.0.1:27017/mqtt', {
+    MongooseModule.forRoot('mongodb://127.0.0.1:27017/mydb', {
       connectionName: 'Info',
     }),
-    MongooseModule.forRoot('mongodb://127.0.0.1:27017/mqtt', {
+    MongooseModule.forRoot('mongodb://127.0.0.1:27017/mydb', {
       connectionName: 'Data',
     }),
-    MongooseModule.forRoot('mongodb://127.0.0.1:27017/mqtt', {
+    MongooseModule.forRoot('mongodb://127.0.0.1:27017/mydb', {
       connectionName: 'LastData',
     }),
-    MongooseModule.forRoot('mongodb://127.0.0.1:27017/mqtt', {
+    MongooseModule.forRoot('mongodb://127.0.0.1:27017/mydb', {
       connectionName: 'YesterdayData',
     }),
-    MongooseModule.forRoot('mongodb://127.0.0.1:27017/mqtt', {
+    MongooseModule.forRoot('mongodb://127.0.0.1:27017/mydb', {
       connectionName: 'YesterdayDataStatistic',
     }),
     UsersModule,
