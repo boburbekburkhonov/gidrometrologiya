@@ -5,27 +5,26 @@ import { config } from './config';
 import { UsersModule } from './modules/users/users.module';
 import { InfoModule } from './modules/info/info.module';
 import { MqttModule } from './modules/mqtt/mqtt.module';
-import { CronService } from './modules/mqtt/cron.service';
 
 @Module({
   imports: [
     ConfigModule.forRoot(config),
-    MongooseModule.forRoot('mongodb://admin:password@127.0.0.1:27017/admin', {
+    MongooseModule.forRoot(process.env.MONGO_URL, {
       connectionName: 'User',
     }),
-    MongooseModule.forRoot('mongodb://admin:password@127.0.0.1:27017/admin', {
+    MongooseModule.forRoot(process.env.MONGO_URL, {
       connectionName: 'Info',
     }),
-    MongooseModule.forRoot('mongodb://admin:password@127.0.0.1:27017/admin', {
+    MongooseModule.forRoot(process.env.MONGO_URL, {
       connectionName: 'Data',
     }),
-    MongooseModule.forRoot('mongodb://admin:password@127.0.0.1:27017/admin', {
+    MongooseModule.forRoot(process.env.MONGO_URL, {
       connectionName: 'LastData',
     }),
-    MongooseModule.forRoot('mongodb://admin:password@127.0.0.1:27017/admin', {
+    MongooseModule.forRoot(process.env.MONGO_URL, {
       connectionName: 'YesterdayData',
     }),
-    MongooseModule.forRoot('mongodb://admin:password@127.0.0.1:27017/admin', {
+    MongooseModule.forRoot(process.env.MONGO_URL, {
       connectionName: 'YesterdayDataStatistic',
     }),
     UsersModule,
