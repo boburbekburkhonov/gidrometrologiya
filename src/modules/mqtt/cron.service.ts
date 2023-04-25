@@ -25,26 +25,7 @@ export class CronService {
 
   @Cron('00 00 * * *')
   async yesterdayData() {
-    const timePresentStart: Date = new Date();
-    const timePresentEnd: Date = new Date();
-    const timeYesterdayStart: Date = new Date();
-    const timeYesterdayEnd: Date = new Date();
-
-    timeYesterdayStart.setHours(5);
-    timeYesterdayStart.setMinutes(0);
-    timeYesterdayStart.setSeconds(0);
-    timeYesterdayStart.setDate(timeYesterdayStart.getDate() - 1);
-    timeYesterdayEnd.setHours(4);
-    timeYesterdayEnd.setMinutes(59);
-    timeYesterdayEnd.setSeconds(59);
-
-    timePresentStart.setHours(5);
-    timePresentStart.setMinutes(0);
-    timePresentStart.setSeconds(0);
-    timePresentEnd.setHours(4);
-    timePresentEnd.setMinutes(59);
-    timePresentEnd.setSeconds(59);
-    timePresentEnd.setDate(timePresentEnd.getDate() + 1);
+    const dateToArray = new Date().toLocaleString().split('/');
 
     const yesterdayAllData = await this.yesterdayDataModel.aggregate([
       {
@@ -113,21 +94,29 @@ export class CronService {
 
     await this.yesterdayDataModel.deleteMany({
       time: {
-        $gte: timeYesterdayStart,
-        $lt: timeYesterdayEnd,
+        $gte: `${dateToArray[2].slice(0, 4)}-${dateToArray[0]}-${
+          Number(dateToArray[1]) - 2
+        }`,
+        $lt: `${dateToArray[2].slice(0, 4)}-${dateToArray[0]}-${
+          Number(dateToArray[1]) - 1
+        }`,
       },
     });
 
     const foundPresentData = await this.dataModel.find({
       time: {
-        $gte: timePresentStart,
-        $lt: timePresentEnd,
+        $gte: `${dateToArray[2].slice(0, 4)}-${dateToArray[0]}-${
+          Number(dateToArray[1]) - 1
+        }`,
+        $lt: `${dateToArray[2].slice(0, 4)}-${dateToArray[0]}-${
+          dateToArray[1]
+        }`,
       },
     });
 
     foundPresentData.forEach(async (e) => {
       const yesterdayData = new this.yesterdayDataModel({
-        name: e.name,
+        name: e.name ? e.name : 'testing',
         imei: e.imei,
         time: e.time,
         windDirection: e.windDirection,
