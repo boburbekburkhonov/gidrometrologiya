@@ -23,7 +23,7 @@ export class CronService {
     private readonly yesterdayDataStatisticModel: Model<yesterdayDataStatisticDocument>,
   ) {}
 
-  @Cron('00 00 * * *')
+  @Cron('20 00 * * *')
   async yesterdayData() {
     const dateToArray = new Date().toLocaleString().split('/');
 
@@ -108,9 +108,9 @@ export class CronService {
         $gte: `${dateToArray[2].slice(0, 4)}-${dateToArray[0]}-${
           Number(dateToArray[1]) - 1
         }`,
-        $lt: `${dateToArray[2].slice(0, 4)}-${dateToArray[0]}-${
-          dateToArray[1]
-        }`,
+        $lt: `${dateToArray[2].slice(0, 4)}-${dateToArray[0]}-${Number(
+          dateToArray[1],
+        )}`,
       },
     });
 
