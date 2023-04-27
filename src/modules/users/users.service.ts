@@ -32,7 +32,7 @@ export class UsersService {
     const existingUser = await this.userModel.findOne(payload);
 
     if (!existingUser) {
-      throw new HttpException('User not found, Register', HttpStatus.OK);
+      throw new HttpException("Foydalanuvchi nomingiz yoki parolingiz noto'gri", HttpStatus.OK);
     }
 
     return {
@@ -47,7 +47,7 @@ export class UsersService {
     const existingUser = await this.userModel.findOne(payload);
 
     if (existingUser) {
-      throw new HttpException('User already exists, Login', HttpStatus.OK);
+      throw new HttpException("Siz allaqachon ro'yhatdan o'tgansiz", HttpStatus.OK);
     }
 
     const newUser = new this.userModel(payload);
@@ -63,7 +63,7 @@ export class UsersService {
     const existingUser = await this.userModel
       .findByIdAndUpdate({ _id: id }, payload)
       .catch((err: unknown) => {
-        throw new NotFoundException('User not found');
+        throw new NotFoundException("Foydalanuvchi nomingiz yoki parolingiz noto'gri");
       });
 
     return existingUser;
@@ -73,7 +73,7 @@ export class UsersService {
     const existingUser = await this.userModel
       .findByIdAndUpdate({ _id: id }, payload)
       .catch((err: unknown) => {
-        throw new NotFoundException('User not found');
+        throw new NotFoundException("Foydalanuvchi nomingiz yoki parolingiz noto'gri");
       });
 
     return existingUser;
@@ -83,7 +83,9 @@ export class UsersService {
     const existingUser = await this.userModel
       .findByIdAndDelete({ _id: id })
       .catch((err: unknown) => {
-        throw new NotFoundException('User not found');
+        throw new NotFoundException(
+          "Foydalanuvchi nomingiz yoki parolingiz noto'gri",
+        );
       });
 
     return existingUser;
