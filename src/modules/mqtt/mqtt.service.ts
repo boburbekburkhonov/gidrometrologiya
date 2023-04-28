@@ -187,8 +187,18 @@ export class MqttService implements OnModuleInit {
 
   //! DATA WITH IMEI
   async getDataImei(userId: string, imei: string): Promise<Data[]> {
-    return await this.dataModel.find({ user: userId, imei: imei });
-  }
+    let date = new Date();
+    let currentPresentDate = new Date();
+    currentPresentDate.setHours(5);
+    currentPresentDate.setMinutes(0);
+    currentPresentDate.setSeconds(0);
+    date.setHours(date.getHours() + 5);
+
+    return await this.dataModel.find({ user: userId, imei: imei, time: {
+      $gte: currentPresentDate,
+      $lt: date,
+    }, });
+  }d
 
   // ! DATA STATISTICS
   async getDataStatics(userId: string): Promise<any> {
@@ -351,6 +361,31 @@ export class MqttService implements OnModuleInit {
         'imei name time windDirection rainHeight windSpeed airHumidity airTemp airPressure soilHumidity soilTemp leafHumidity leafTemp typeSensor',
       )
       .catch((error: unknown) => console.log(error));
+
+    return dataPresent;
+  }
+
+  // ! DATA PRESENT DAY WITH NAME
+  async getDataPresentDayName(userId: string, name: string): Promise<Data[]> {
+    let date = new Date();
+    let currentPresentDate = new Date();
+    currentPresentDate.setHours(5);
+    currentPresentDate.setMinutes(0);
+    currentPresentDate.setSeconds(0);
+    date.setHours(date.getHours() + 5);
+
+    let dataPresent = await this.dataModel
+    .find({
+      user: userId,
+      name: name,
+      time: {
+        $gte: currentPresentDate,
+        $lt: date,
+      },
+    })
+    .select(
+      'imei name time windDirection rainHeight windSpeed airHumidity airTemp airPressure soilHumidity soilTemp leafHumidity leafTemp typeSensor',
+    )
 
     return dataPresent;
   }
@@ -874,7 +909,7 @@ export class MqttService implements OnModuleInit {
     } else {
       filterData = await this.dataModel.find({
         user: userId,
-        typeSensor: payload.deviceName,
+        name: payload.deviceName,
         time: {
           $gte: startDate,
           $lt: endDate,
@@ -924,7 +959,17 @@ export class MqttService implements OnModuleInit {
 
   //! DATA WITH IMEI
   async getDataImeiAdmin(imei: string): Promise<Data[]> {
-    return await this.dataModel.find({ imei: imei });
+    let date = new Date();
+    let currentPresentDate = new Date();
+    currentPresentDate.setHours(5);
+    currentPresentDate.setMinutes(0);
+    currentPresentDate.setSeconds(0);
+    date.setHours(date.getHours() + 5);
+
+    return await this.dataModel.find({ imei: imei, time: {
+      $gte: currentPresentDate,
+      $lt: date,
+    }, });
   }
 
   // ! DATA PRESENT DAY
@@ -947,6 +992,29 @@ export class MqttService implements OnModuleInit {
         'imei name time windDirection rainHeight windSpeed airHumidity airTemp airPressure soilHumidity soilTemp leafHumidity leafTemp typeSensor',
       )
       .catch((error: unknown) => console.log(error));
+
+    return dataPresent;
+  }
+
+  // ! DATA PRESENT DAY WITH NAME
+  async getDataPresentDayAdminName(name: string): Promise<Data[]> {
+    let date = new Date();
+    let currentPresentDate = new Date();
+    currentPresentDate.setHours(5);
+    currentPresentDate.setMinutes(0);
+    currentPresentDate.setSeconds(0);
+    date.setHours(date.getHours() + 5);
+
+    let dataPresent = await this.dataModel
+    .find({
+      name: name,
+      time: {
+        $gte: currentPresentDate,
+        $lt: date,
+      },
+    }).select(
+      'imei name time windDirection rainHeight windSpeed airHumidity airTemp airPressure soilHumidity soilTemp leafHumidity leafTemp typeSensor',
+    )
 
     return dataPresent;
   }
@@ -1493,7 +1561,7 @@ export class MqttService implements OnModuleInit {
       });
     } else {
       filterData = await this.dataModel.find({
-        typeSensor: payload.deviceName,
+        name: payload.deviceName,
         time: {
           $gte: startDate,
           $lt: endDate,

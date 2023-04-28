@@ -58,6 +58,14 @@ export class MqttController {
     return this.service.getDataPresentDay(request.userId);
   }
 
+  @Post('data/present/name')
+  getDataPresentDayName(
+    @Req() request: CustomeRequest,
+    @Body() body: any,
+  ): Promise<Data[]> {
+    return this.service.getDataPresentDayName(request.userId, body.name);
+  }
+
   @Get('data/three')
   getDataThreeDay(@Req() request: CustomeRequest): Promise<Data[]> {
     return this.service.getDataThreeDay(request.userId);
@@ -152,6 +160,11 @@ export class MqttController {
   @Get('admin/data/present')
   getDataPresentDayAdmin(): Promise<Data[]> {
     return this.service.getDataPresentDayAdmin();
+  }
+
+  @Post('admin/data/present/name')
+  getDataPresentDayAdminName(@Body() body: any): Promise<Data[]> {
+    return this.service.getDataPresentDayAdminName(body.name);
   }
 
   @Get('admin/lastdata')
