@@ -194,11 +194,15 @@ export class MqttService implements OnModuleInit {
     currentPresentDate.setSeconds(0);
     date.setHours(date.getHours() + 5);
 
-    return await this.dataModel.find({ user: userId, imei: imei, time: {
-      $gte: currentPresentDate,
-      $lt: date,
-    }, });
-  }d
+    return await this.dataModel.find({
+      user: userId,
+      imei: imei,
+      time: {
+        $gte: currentPresentDate,
+        $lt: date,
+      },
+    });
+  }
 
   // ! DATA STATISTICS
   async getDataStatics(userId: string): Promise<any> {

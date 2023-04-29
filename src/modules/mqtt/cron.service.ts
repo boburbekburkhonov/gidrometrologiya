@@ -23,7 +23,7 @@ export class CronService {
     private readonly yesterdayDataStatisticModel: Model<yesterdayDataStatisticDocument>,
   ) {}
 
-  @Cron('35 16 * * *')
+  @Cron('55 9 * * *')
   async yesterdayData() {
     const dateToArray = new Date().toLocaleString().split('/');
 
