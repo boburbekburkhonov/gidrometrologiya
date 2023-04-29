@@ -23,9 +23,16 @@ export class CronService {
     private readonly yesterdayDataStatisticModel: Model<yesterdayDataStatisticDocument>,
   ) {}
 
-  @Cron('55 9 * * *')
+  @Cron('08 10 * * *')
   async yesterdayData() {
     const dateToArray = new Date().toLocaleString().split('/');
+
+    var start = new Date();
+    start.setUTCDate(start.getUTCDate() - 1);
+    start.setUTCHours(0, 0, 0, 0);
+
+    var end = new Date();
+    end.setUTCHours(23, 59, 59, 999);
 
     const yesterdayAllData = await this.yesterdayDataModel.aggregate([
       {
@@ -105,12 +112,8 @@ export class CronService {
 
     const foundPresentData = await this.dataModel.find({
       time: {
-        $gte: `${dateToArray[2].slice(0, 4)}-${dateToArray[0]}-${
-          Number(dateToArray[1]) - 1
-        }`,
-        $lt: `${dateToArray[2].slice(0, 4)}-${dateToArray[0]}-${Number(
-          dateToArray[1],
-        )}`,
+        $gt: start,
+        $lt: end,
       },
     });
 
