@@ -23,16 +23,25 @@ export class CronService {
     private readonly yesterdayDataStatisticModel: Model<yesterdayDataStatisticDocument>,
   ) {}
 
-  @Cron('18 11 * * *')
+  @Cron('00 00 * * *')
   async yesterdayData() {
-    const dateToArray = new Date().toLocaleString().split('/');
+    //! PRESENT
+    let startDate = new Date();
+    startDate.setUTCDate(startDate.getUTCDate() - 1);
+    startDate.setUTCHours(0, 0, 0, 0);
 
-    var start = new Date();
-    start.setUTCDate(start.getUTCDate() - 1);
-    start.setUTCHours(0, 0, 0, 0);
+    let endDate = new Date();
+    endDate.setUTCDate(endDate.getUTCDate() - 1);
+    endDate.setUTCHours(23, 59, 59, 999);
 
-    var end = new Date();
-    end.setUTCHours(23, 59, 59, 999);
+    //! YESTERDAY
+    let startDateYesterday = new Date();
+    startDateYesterday.setUTCDate(startDateYesterday.getUTCDate() - 2);
+    startDateYesterday.setUTCHours(0, 0, 0, 0);
+
+    let endDateYesterday = new Date();
+    endDateYesterday.setUTCDate(endDateYesterday.getUTCDate() - 2);
+    endDateYesterday.setUTCHours(23, 59, 59, 999);
 
     const yesterdayAllData = await this.yesterdayDataModel.aggregate([
       {
@@ -101,19 +110,15 @@ export class CronService {
 
     await this.yesterdayDataModel.deleteMany({
       time: {
-        $gte: `${dateToArray[2].slice(0, 4)}-${dateToArray[0]}-${
-          Number(dateToArray[1]) - 2
-        }`,
-        $lt: `${dateToArray[2].slice(0, 4)}-${dateToArray[0]}-${
-          Number(dateToArray[1]) - 1
-        }`,
+        $gte: startDateYesterday,
+        $lt: endDateYesterday,
       },
     });
 
     const foundPresentData = await this.dataModel.find({
       time: {
-        $gt: start,
-        $lt: end,
+        $gt: startDate,
+        $lt: endDate,
       },
     });
 

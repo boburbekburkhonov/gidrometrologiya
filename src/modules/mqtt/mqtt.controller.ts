@@ -40,6 +40,16 @@ export class MqttController {
     return this.service.getData(request.userId);
   }
 
+  @Get('data/device/name')
+  getDataDeviceName(@Req() request: CustomeRequest): Promise<Data[]> {
+    return this.service.getDataDeviceName(request.userId);
+  }
+
+  @Get('data/device/name/present')
+  getDataDeviceNamePresent(@Req() request: CustomeRequest): Promise<Data[]> {
+    return this.service.getDataDeviceNamePresent(request.userId);
+  }
+
   @Get('data/imei/:imei')
   getDataImei(
     @Req() request: CustomeRequest,
@@ -130,11 +140,30 @@ export class MqttController {
     return this.service.getYesterdayData(request.userId);
   }
 
+  @Post('yesterday/data/found/name')
+  getYesterdayDataFindName(
+    @Req() request: CustomeRequest,
+    @Body() body: any,
+  ): Promise<LastData[]> {
+    return this.service.getYesterdayDataFindName(request.userId, body.name);
+  }
+
   @Get('yesterday/data/statistics')
   getYesterdayDataStatistics(
     @Req() request: CustomeRequest,
   ): Promise<LastData[]> {
     return this.service.getYesterdayDataStatistics(request.userId);
+  }
+
+  @Post('yesterday/data/statistics/found/name')
+  getYesterdayDataStatisticsFoundName(
+    @Req() request: CustomeRequest,
+    @Body() body: any,
+  ): Promise<LastData[]> {
+    return this.service.getYesterdayDataStatisticsFoundName(
+      request.userId,
+      body.name,
+    );
   }
 
   @Get('yesterday/data/statistics/devices/:time')
@@ -150,6 +179,16 @@ export class MqttController {
   @Get('admin/data')
   getDataAdmin(): Promise<Data[]> {
     return this.service.getDataAdmin();
+  }
+
+  @Get('admin/data/device/name')
+  getDataDeviceNameAdmin(): Promise<Data[]> {
+    return this.service.getDataDeviceNameAdmin();
+  }
+
+  @Get('admin/data/device/name/present')
+  getDataDeviceNamePresentAdmin(): Promise<Data[]> {
+    return this.service.getDataDeviceNamePresentAdmin();
   }
 
   @Get('admin/data/imei/:imei')
@@ -223,9 +262,21 @@ export class MqttController {
     return this.service.getYesterdayDataAdmin();
   }
 
+  @Post('admin/yesterday/data/found/name')
+  getYesterdayDataFoundNameAdmin(@Body() body: any): Promise<LastData[]> {
+    return this.service.getYesterdayDataFoundNameAdmin(body.name);
+  }
+
   @Get('admin/yesterday/data/statistics')
   getYesterdayDataStatisticsAdmin(): Promise<LastData[]> {
     return this.service.getYesterdayDataStatisticsAdmin();
+  }
+
+  @Post('admin/yesterday/data/statistics/found/name')
+  getYesterdayDataStatisticsFoundNameAdmin(
+    @Body() body: any,
+  ): Promise<LastData[]> {
+    return this.service.getYesterdayDataStatisticsFoundNameAdmin(body.name);
   }
 
   @Get('admin/yesterday/data/statistics/devices/:time')
