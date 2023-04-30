@@ -27,20 +27,18 @@ export class CronService {
   async yesterdayData() {
     //! PRESENT
     let startDate = new Date();
-    startDate.setUTCDate(startDate.getUTCDate() - 1);
     startDate.setUTCHours(0, 0, 0, 0);
 
     let endDate = new Date();
-    endDate.setUTCDate(endDate.getUTCDate() - 1);
     endDate.setUTCHours(23, 59, 59, 999);
 
     //! YESTERDAY
     let startDateYesterday = new Date();
-    startDateYesterday.setUTCDate(startDateYesterday.getUTCDate() - 2);
+    startDateYesterday.setUTCDate(startDateYesterday.getUTCDate() - 1);
     startDateYesterday.setUTCHours(0, 0, 0, 0);
 
     let endDateYesterday = new Date();
-    endDateYesterday.setUTCDate(endDateYesterday.getUTCDate() - 2);
+    endDateYesterday.setUTCDate(endDateYesterday.getUTCDate() - 1);
     endDateYesterday.setUTCHours(23, 59, 59, 999);
 
     const yesterdayAllData = await this.yesterdayDataModel.aggregate([
@@ -117,7 +115,7 @@ export class CronService {
 
     const foundPresentData = await this.dataModel.find({
       time: {
-        $gt: startDate,
+        $gte: startDate,
         $lt: endDate,
       },
     });
