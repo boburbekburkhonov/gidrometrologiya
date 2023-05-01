@@ -33,6 +33,11 @@ export class InfoController {
     return this.service.getInfo();
   }
 
+  @Get('/:imei')
+  getInfoImei(@Param('imei') imei: string): Promise<Info> {
+    return this.service.getInfoImei(imei);
+  }
+
   @HttpCode(HttpStatus.CREATED)
   @Post('create')
   createInfo(
