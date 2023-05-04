@@ -24,6 +24,10 @@ export class UsersService {
     return await this.userModel.findOne({ _id: userId });
   }
 
+  async getFoundUserId(userId: string): Promise<User[]> {
+    return await this.userModel.findOne({ _id: userId });
+  }
+
   async getUsers(): Promise<User[]> {
     return await this.userModel.find();
   }

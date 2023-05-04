@@ -29,6 +29,12 @@ export class UsersController {
     return this.service.getUserId(request.userId);
   }
 
+  @UseGuards(JwtGuard)
+  @Get('profile/:id')
+  getFoundUserId(@Param('id') id: string): Promise<User[]> {
+    return this.service.getFoundUserId(id);
+  }
+
   @Get('list')
   getUsers(): Promise<User[]> {
     return this.service.getUsers();
