@@ -27,6 +27,9 @@ import { MqttModule } from './modules/mqtt/mqtt.module';
     MongooseModule.forRoot(process.env.MONGO_URL, {
       connectionName: 'YesterdayDataStatistic',
     }),
+    MongooseModule.forRoot(process.env.MONGO_URL, {
+      connectionName: 'OneYearData',
+    }),
     UsersModule,
     InfoModule,
     MqttModule,

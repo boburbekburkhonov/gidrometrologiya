@@ -13,6 +13,7 @@ import {
 import { CronService } from './cron.service';
 import { ScheduleModule } from '@nestjs/schedule';
 import { YesterdayDataStatistic, yesterdayDataStatisticSchema } from './schemas/yesterdayDataStatistic.schema';
+import { oneYearData, oneYearDatachema } from './schemas/oneYearData.schema';
 
 @Module({
   imports: [
@@ -61,10 +62,18 @@ import { YesterdayDataStatistic, yesterdayDataStatisticSchema } from './schemas/
       ],
       'YesterdayDataStatistic',
     ),
-    ScheduleModule.forRoot()
+    MongooseModule.forFeature(
+      [
+        {
+          name: oneYearData.name,
+          schema: oneYearDatachema,
+        },
+      ],
+      'OneYearData',
+    ),
+    ScheduleModule.forRoot(),
   ],
   providers: [InfoService, MqttService, CronService],
   controllers: [MqttController],
 })
-
 export class MqttModule {}

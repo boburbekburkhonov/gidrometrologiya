@@ -11,6 +11,7 @@ import {
   YesterdayDataStatistic,
   yesterdayDataStatisticDocument,
 } from './schemas/yesterdayDataStatistic.schema';
+import { oneYearData, oneYearDataDocument } from './schemas/oneYearData.schema';
 
 @Injectable()
 export class CronService {
@@ -21,6 +22,8 @@ export class CronService {
     private readonly yesterdayDataModel: Model<yesterdayDataDocument>,
     @InjectModel(YesterdayDataStatistic.name, 'YesterdayDataStatistic')
     private readonly yesterdayDataStatisticModel: Model<yesterdayDataStatisticDocument>,
+    @InjectModel(oneYearData.name, 'OneYearData')
+    private readonly oneYearDataModel: Model<oneYearDataDocument>,
   ) {}
 
   @Cron('00 00 * * *')
@@ -140,6 +143,90 @@ export class CronService {
       });
 
       await yesterdayData.save();
+    });
+  }
+
+  @Cron('00 00 01 * *')
+  async oneYearData() {
+    //! ONE MONTH
+    let startDateMonth = new Date();
+    startDateMonth.setUTCDate(1);
+    startDateMonth.setUTCHours(0, 0, 0, 0);
+
+    let endDateMonth = new Date();
+    endDateMonth.setUTCHours(23, 59, 59, 999);
+
+    const yesterdayAllDataStatistic =
+      await this.yesterdayDataStatisticModel.aggregate([
+        {
+          $group: {
+            _id: '$name',
+            name: { $first: '$name' },
+            imei: { $first: '$imei' },
+            time: { $last: '$time' },
+            windDirection: {
+              $avg: '$windDirection',
+            },
+            rainHeight: {
+              $avg: '$rainHeight',
+            },
+            windSpeed: {
+              $avg: '$windSpeed',
+            },
+            airHumidity: {
+              $avg: '$airHumidity',
+            },
+            airTemp: {
+              $avg: '$airTemp',
+            },
+            airPressure: {
+              $avg: '$airPressure',
+            },
+            soilHumidity: {
+              $avg: '$soilHumidity',
+            },
+            soilTemp: {
+              $avg: '$soilTemp',
+            },
+            leafHumidity: {
+              $avg: '$leafHumidity',
+            },
+            leafTemp: {
+              $avg: '$leafTemp',
+            },
+            typeSensor: { $first: '$typeSensor' },
+            user: { $first: '$user' },
+          },
+        },
+      ]);
+
+    yesterdayAllDataStatistic.forEach(async (e) => {
+      const yesterdayDataStatistic = new this.oneYearDataModel({
+        name: e.name ? e.name : 'testing',
+        imei: e.imei,
+        time: e.time,
+        windDirection: e.windDirection.toFixed(2),
+        rainHeight: e.rainHeight.toFixed(2),
+        windSpeed: e.windSpeed.toFixed(2),
+        airHumidity: e.airHumidity.toFixed(2),
+        airTemp: e.airTemp.toFixed(2),
+        airPressure: e.airPressure.toFixed(2),
+        soilHumidity: e.soilHumidity.toFixed(2),
+        soilTemp: e.soilTemp.toFixed(2),
+        leafHumidity: e.leafHumidity.toFixed(2),
+        leafTemp: e.leafTemp.toFixed(2),
+        typeSensor: e.typeSensor,
+        user: e.user,
+      });
+
+      await yesterdayDataStatistic.save();
+    });
+
+    await this.yesterdayDataStatisticModel.deleteMany({
+      time: {
+        $gte: startDateMonth,
+        $lt: endDateMonth,
+      },
     });
   }
 }
