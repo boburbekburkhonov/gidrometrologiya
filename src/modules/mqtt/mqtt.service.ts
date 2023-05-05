@@ -959,19 +959,25 @@ export class MqttService implements OnModuleInit {
 
   // ! YESTERDAY DATA
   async getYesterdayData(userId: string): Promise<YesterdayData[]> {
-    return await this.yesterdayDataModel.find({ user: userId });
+    return await this.yesterdayDataModel
+      .find({ user: userId })
+      .sort({ time: 1 });
   }
 
   // ! YESTERDAY DATA FOUND NAME
   async getYesterdayDataFindName(userId: string, name:string): Promise<YesterdayData[]> {
-    return await this.yesterdayDataModel.find({ user: userId, name: name});
+    return await this.yesterdayDataModel
+      .find({ user: userId, name: name })
+      .sort({ time: 1 });
   }
 
   // ! YESTERDAY DATA STATISTICS
   async getYesterdayDataStatistics(
     userId: string,
   ): Promise<YesterdayDataStatistic[]> {
-    return await this.yesterdayDataStatisticModel.find({ user: userId });
+    return await this.yesterdayDataStatisticModel
+      .find({ user: userId })
+      .sort({ time: 1 });
   }
 
   // ! YESTERDAY DATA STATISTICS FOUND NAME
@@ -979,7 +985,9 @@ export class MqttService implements OnModuleInit {
     userId: string,
     name: string
   ): Promise<YesterdayDataStatistic[]> {
-    return await this.yesterdayDataStatisticModel.find({ user: userId, name: name });
+    return await this.yesterdayDataStatisticModel
+      .find({ user: userId, name: name })
+      .sort({ time: 1 });
   }
 
   // ! YESTERDAY DATA STATISTICS DEVICES
@@ -1660,22 +1668,24 @@ export class MqttService implements OnModuleInit {
 
   // ! YESTERDAY DATA
   async getYesterdayDataAdmin(): Promise<YesterdayData[]> {
-    return await this.yesterdayDataModel.find();
+    return await this.yesterdayDataModel.find().sort({ time: 1 });
   }
 
   // ! YESTERDAY DATA FOUND NAME
   async getYesterdayDataFoundNameAdmin(name: string): Promise<YesterdayData[]> {
-    return await this.yesterdayDataModel.find({name: name});
+    return await this.yesterdayDataModel.find({ name: name }).sort({ time: 1 });
   }
 
   // ! YESTERDAY DATA STATISTICS
   async getYesterdayDataStatisticsAdmin(): Promise<YesterdayDataStatistic[]> {
-    return await this.yesterdayDataStatisticModel.find();
+    return await this.yesterdayDataStatisticModel.find().sort({ time: 1 });
   }
 
   // ! YESTERDAY DATA STATISTICS FOUND NAME
   async getYesterdayDataStatisticsFoundNameAdmin(name: string): Promise<YesterdayDataStatistic[]> {
-    return await this.yesterdayDataStatisticModel.find({ name: name });
+    return await this.yesterdayDataStatisticModel
+      .find({ name: name })
+      .sort({ time: 1 });
   }
 
   // ! YESTERDAY DATA STATISTICS DEVICES
