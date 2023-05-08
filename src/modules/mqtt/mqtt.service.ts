@@ -218,7 +218,7 @@ export class MqttService implements OnModuleInit {
     return [...devicesName];
   }
 
-  //! DATA WITH IMEI
+  //! DATA PRESENT DAY WITH IMEI
   async getDataImei(userId: string, imei: string): Promise<Data[]> {
     let date = new Date();
     let currentPresentDate = new Date();
@@ -227,14 +227,16 @@ export class MqttService implements OnModuleInit {
     currentPresentDate.setSeconds(0);
     date.setHours(date.getHours() + 5);
 
-    return await this.dataModel.find({
-      user: userId,
-      imei: imei,
-      time: {
-        $gte: currentPresentDate,
-        $lt: date,
-      },
-    });
+    return await this.dataModel
+      .find({
+        user: userId,
+        imei: imei,
+        time: {
+          $gte: currentPresentDate,
+          $lt: date,
+        },
+      })
+      .sort({ time: -1 });
   }
 
   // ! DATA STATISTICS
@@ -397,6 +399,7 @@ export class MqttService implements OnModuleInit {
       .select(
         'imei name time windDirection rainHeight windSpeed airHumidity airTemp airPressure soilHumidity soilTemp leafHumidity leafTemp typeSensor',
       )
+      .sort({ time: -1 })
       .catch((error: unknown) => console.log(error));
 
     return dataPresent;
@@ -420,6 +423,7 @@ export class MqttService implements OnModuleInit {
           $lt: date,
         },
       })
+      .sort({ time: -1 })
       .select(
         'imei name time windDirection rainHeight windSpeed airHumidity airTemp airPressure soilHumidity soilTemp leafHumidity leafTemp typeSensor',
       );
@@ -961,14 +965,17 @@ export class MqttService implements OnModuleInit {
   async getYesterdayData(userId: string): Promise<YesterdayData[]> {
     return await this.yesterdayDataModel
       .find({ user: userId })
-      .sort({ time: 1 });
+      .sort({ time: -1 });
   }
 
   // ! YESTERDAY DATA FOUND NAME
-  async getYesterdayDataFindName(userId: string, name:string): Promise<YesterdayData[]> {
+  async getYesterdayDataFindName(
+    userId: string,
+    name: string,
+  ): Promise<YesterdayData[]> {
     return await this.yesterdayDataModel
       .find({ user: userId, name: name })
-      .sort({ time: 1 });
+      .sort({ time: -1 });
   }
 
   // ! YESTERDAY DATA STATISTICS
@@ -977,17 +984,17 @@ export class MqttService implements OnModuleInit {
   ): Promise<YesterdayDataStatistic[]> {
     return await this.yesterdayDataStatisticModel
       .find({ user: userId })
-      .sort({ time: 1 });
+      .sort({ time: -1 });
   }
 
   // ! YESTERDAY DATA STATISTICS FOUND NAME
   async getYesterdayDataStatisticsFoundName(
     userId: string,
-    name: string
+    name: string,
   ): Promise<YesterdayDataStatistic[]> {
     return await this.yesterdayDataStatisticModel
       .find({ user: userId, name: name })
-      .sort({ time: 1 });
+      .sort({ time: -1 });
   }
 
   // ! YESTERDAY DATA STATISTICS DEVICES
@@ -1047,7 +1054,7 @@ export class MqttService implements OnModuleInit {
     return [...devicesName];
   }
 
-  //! DATA WITH IMEI
+  //! DATA PRESENT DAY WITH IMEI
   async getDataImeiAdmin(imei: string): Promise<Data[]> {
     let date = new Date();
     let currentPresentDate = new Date();
@@ -1056,13 +1063,15 @@ export class MqttService implements OnModuleInit {
     currentPresentDate.setSeconds(0);
     date.setHours(date.getHours() + 5);
 
-    return await this.dataModel.find({
-      imei: imei,
-      time: {
-        $gte: currentPresentDate,
-        $lt: date,
-      },
-    });
+    return await this.dataModel
+      .find({
+        imei: imei,
+        time: {
+          $gte: currentPresentDate,
+          $lt: date,
+        },
+      })
+      .sort({ time: -1 });
   }
 
   // ! DATA PRESENT DAY
@@ -1081,9 +1090,11 @@ export class MqttService implements OnModuleInit {
           $lt: date,
         },
       })
+      .sort({ time: -1 })
       .select(
         'imei name time windDirection rainHeight windSpeed airHumidity airTemp airPressure soilHumidity soilTemp leafHumidity leafTemp typeSensor',
       )
+      .sort({ time: -1 })
       .catch((error: unknown) => console.log(error));
 
     return dataPresent;
@@ -1106,6 +1117,7 @@ export class MqttService implements OnModuleInit {
           $lt: date,
         },
       })
+      .sort({ time: -1 })
       .select(
         'imei name time windDirection rainHeight windSpeed airHumidity airTemp airPressure soilHumidity soilTemp leafHumidity leafTemp typeSensor',
       );
@@ -1668,24 +1680,28 @@ export class MqttService implements OnModuleInit {
 
   // ! YESTERDAY DATA
   async getYesterdayDataAdmin(): Promise<YesterdayData[]> {
-    return await this.yesterdayDataModel.find().sort({ time: 1 });
+    return await this.yesterdayDataModel.find().sort({ time: -1 });
   }
 
   // ! YESTERDAY DATA FOUND NAME
   async getYesterdayDataFoundNameAdmin(name: string): Promise<YesterdayData[]> {
-    return await this.yesterdayDataModel.find({ name: name }).sort({ time: 1 });
+    return await this.yesterdayDataModel
+      .find({ name: name })
+      .sort({ time: -1 });
   }
 
   // ! YESTERDAY DATA STATISTICS
   async getYesterdayDataStatisticsAdmin(): Promise<YesterdayDataStatistic[]> {
-    return await this.yesterdayDataStatisticModel.find().sort({ time: 1 });
+    return await this.yesterdayDataStatisticModel.find().sort({ time: -1 });
   }
 
   // ! YESTERDAY DATA STATISTICS FOUND NAME
-  async getYesterdayDataStatisticsFoundNameAdmin(name: string): Promise<YesterdayDataStatistic[]> {
+  async getYesterdayDataStatisticsFoundNameAdmin(
+    name: string,
+  ): Promise<YesterdayDataStatistic[]> {
     return await this.yesterdayDataStatisticModel
       .find({ name: name })
-      .sort({ time: 1 });
+      .sort({ time: -1 });
   }
 
   // ! YESTERDAY DATA STATISTICS DEVICES
