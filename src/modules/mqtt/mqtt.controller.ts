@@ -76,6 +76,30 @@ export class MqttController {
     return this.service.getDataPresentDayName(request.userId, body.name);
   }
 
+  @Post('data/present/name/value')
+  getDataPresentDayNameFilterObjectWithValue(
+    @Req() request: CustomeRequest,
+    @Body() body: any,
+  ): Promise<Data[]> {
+    return this.service.getDataPresentDayNameFilterObjectWithValue(
+      request.userId,
+      body.name,
+      body.value,
+    );
+  }
+
+  @Post('data/month/name/value')
+  getDataMonthNameFilterObjectWithValue(
+    @Req() request: CustomeRequest,
+    @Body() body: any,
+  ): Promise<Data[]> {
+    return this.service.getDataMonthNameFilterObjectWithValue(
+      request.userId,
+      body.name,
+      body.value,
+    );
+  }
+
   @Get('data/three')
   getDataThreeDay(@Req() request: CustomeRequest): Promise<Data[]> {
     return this.service.getDataThreeDay(request.userId);
@@ -199,6 +223,26 @@ export class MqttController {
   @Get('admin/data/present')
   getDataPresentDayAdmin(): Promise<Data[]> {
     return this.service.getDataPresentDayAdmin();
+  }
+
+  @Post('admin/data/present/name/value')
+  getDataPresentDayAdminNameFilterObjectWithValue(
+    @Body() body: any,
+  ): Promise<Data[]> {
+    return this.service.getDataPresentDayAdminNameFilterObjectWithValue(
+      body.name,
+      body.value,
+    );
+  }
+
+  @Post('admin/data/month/name/value')
+  getDataMonthDataAdminNameFilterObjectWithValue(
+    @Body() body: any,
+  ): Promise<Data[]> {
+    return this.service.getDataMonthDataAdminNameFilterObjectWithValue(
+      body.name,
+      body.value,
+    );
   }
 
   @Post('admin/data/present/name')

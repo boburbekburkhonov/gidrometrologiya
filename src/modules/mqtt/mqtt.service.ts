@@ -431,6 +431,71 @@ export class MqttService implements OnModuleInit {
     return dataPresent;
   }
 
+  // ! DATA PRESENT DAY WITH NAME AND VALUE
+  async getDataPresentDayNameFilterObjectWithValue(
+    userId: string,
+    name: string,
+    value: string,
+  ): Promise<Data[]> {
+    let date = new Date();
+    let currentPresentDate = new Date();
+    currentPresentDate.setHours(5);
+    currentPresentDate.setMinutes(0);
+    currentPresentDate.setSeconds(0);
+    date.setHours(date.getHours() + 5);
+
+    let dataPresent = await this.dataModel
+      .find({
+        user: userId,
+        name: name,
+        time: {
+          $gte: currentPresentDate,
+          $lt: date,
+        },
+      })
+      .sort({ time: -1 })
+      .select(
+        'imei name time windDirection rainHeight windSpeed airHumidity airTemp airPressure soilHumidity soilTemp leafHumidity leafTemp typeSensor',
+      );
+
+    const data: any = [];
+    const time: any = [];
+
+    dataPresent.filter((e) => {
+      data.unshift(e[value]);
+      time.unshift(e.time);
+    });
+
+    return [data, time, value];
+  }
+
+  // ! DATA MONTH WITH NAME AND VALUE
+  async getDataMonthNameFilterObjectWithValue(
+    userId: string,
+    name: string,
+    value: string,
+  ): Promise<Data[]> {
+    let dataPresent = await this.yesterdayDataStatisticModel
+      .find({
+        user: userId,
+        name: name,
+      })
+      .sort({ time: -1 })
+      .select(
+        'imei name time windDirection rainHeight windSpeed airHumidity airTemp airPressure soilHumidity soilTemp leafHumidity leafTemp typeSensor',
+      );
+
+    const data: any = [];
+    const time: any = [];
+
+    dataPresent.filter((e) => {
+      data.unshift(e[value]);
+      time.unshift(e.time);
+    });
+
+    return [data, time, value];
+  }
+
   // ! DATA THREE DAY
   async getDataThreeDay(userId: string): Promise<Data[]> {
     let currentThreeDate = new Date();
@@ -1123,6 +1188,67 @@ export class MqttService implements OnModuleInit {
       );
 
     return dataPresent;
+  }
+
+  // ! DATA PRESENT DAY WITH NAME AND VALUE
+  async getDataPresentDayAdminNameFilterObjectWithValue(
+    name: string,
+    value: string,
+  ): Promise<Data[]> {
+    let date = new Date();
+    let currentPresentDate = new Date();
+    currentPresentDate.setHours(5);
+    currentPresentDate.setMinutes(0);
+    currentPresentDate.setSeconds(0);
+    date.setHours(date.getHours() + 5);
+
+    let dataPresent = await this.dataModel
+      .find({
+        name: name,
+        time: {
+          $gte: currentPresentDate,
+          $lt: date,
+        },
+      })
+      .sort({ time: -1 })
+      .select(
+        'imei name time windDirection rainHeight windSpeed airHumidity airTemp airPressure soilHumidity soilTemp leafHumidity leafTemp typeSensor',
+      );
+
+    const data: any = [];
+    const time: any = [];
+
+    dataPresent.filter((e) => {
+      data.unshift(e[value]);
+      time.unshift(e.time);
+    });
+
+    return [data, time, value];
+  }
+
+  // ! MONTH DATA WITH NAME AND VALUE
+  async getDataMonthDataAdminNameFilterObjectWithValue(
+    name: string,
+    value: string,
+  ): Promise<Data[]> {
+    let dataPresent = await this.yesterdayDataStatisticModel
+      .find({
+        name: name,
+      })
+      .sort({ time: -1 })
+      .select(
+        'imei name time windDirection rainHeight windSpeed airHumidity airTemp airPressure soilHumidity soilTemp leafHumidity leafTemp typeSensor',
+      );
+
+    const data: any = [];
+    const time: any = [];
+
+    dataPresent.filter((e) => {
+      data.unshift(e[value]);
+      time.unshift(e.time);
+    });
+
+    return [data, time, value];
   }
 
   //! LASTDATA
