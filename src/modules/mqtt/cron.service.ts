@@ -146,14 +146,16 @@ export class CronService {
     });
   }
 
-  @Cron('00 00 01 * *')
+  @Cron('01 00 02 * *')
   async oneYearData() {
     //! ONE MONTH
     let startDateMonth = new Date();
+    startDateMonth.setUTCMonth(startDateMonth.getUTCMonth() - 1);
     startDateMonth.setUTCDate(1);
     startDateMonth.setUTCHours(0, 0, 0, 0);
 
     let endDateMonth = new Date();
+    endDateMonth.setUTCDate(endDateMonth.getUTCDate() - 1);
     endDateMonth.setUTCHours(23, 59, 59, 999);
 
     const yesterdayAllDataStatistic =
