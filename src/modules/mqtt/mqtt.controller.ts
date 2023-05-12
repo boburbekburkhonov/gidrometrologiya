@@ -45,22 +45,12 @@ export class MqttController {
     return this.service.getDataDeviceName(request.userId);
   }
 
-  @Get('data/device/name/present')
-  getDataDeviceNamePresent(@Req() request: CustomeRequest): Promise<Data[]> {
-    return this.service.getDataDeviceNamePresent(request.userId);
-  }
-
   @Get('data/imei/:imei')
   getDataImei(
     @Req() request: CustomeRequest,
     @Param('imei') imei: string,
   ): Promise<Data[]> {
     return this.service.getDataImei(request.userId, imei);
-  }
-
-  @Get('data/statistics')
-  getDataStatics(@Req() request: CustomeRequest): Promise<Data[]> {
-    return this.service.getDataStatics(request.userId);
   }
 
   @Get('data/present')
@@ -98,56 +88,6 @@ export class MqttController {
       body.name,
       body.value,
     );
-  }
-
-  @Get('data/three')
-  getDataThreeDay(@Req() request: CustomeRequest): Promise<Data[]> {
-    return this.service.getDataThreeDay(request.userId);
-  }
-
-  @Get('data/ten')
-  getDataTenDay(@Req() request: CustomeRequest): Promise<Data[]> {
-    return this.service.getDataTenDay(request.userId);
-  }
-
-  @Get('data/month')
-  getDataMonth(@Req() request: CustomeRequest): Promise<Data[]> {
-    return this.service.getDataMonth(request.userId);
-  }
-
-  @Get('data/year')
-  getDataYear(@Req() request: CustomeRequest): Promise<Data[]> {
-    return this.service.getDataYear(request.userId);
-  }
-
-  @Get('data/statistics/devices')
-  getDataStaticsDevices(@Req() request: CustomeRequest): Promise<Data[]> {
-    return this.service.getDataStaticsDevices(request.userId);
-  }
-
-  @Get('data/devices/working/present')
-  getDataDevicesPresentDay(@Req() request: CustomeRequest): Promise<Data[]> {
-    return this.service.getDataDevicesPresentDay(request.userId);
-  }
-
-  @Get('data/devices/working/three')
-  getDataDevicesThreeDay(@Req() request: CustomeRequest): Promise<Data[]> {
-    return this.service.getDataDevicesThreeDay(request.userId);
-  }
-
-  @Get('data/devices/working/ten')
-  getDataDevicesTenDay(@Req() request: CustomeRequest): Promise<Data[]> {
-    return this.service.getDataDevicesTenDay(request.userId);
-  }
-
-  @Get('data/devices/working/month')
-  getDataDevicesMonth(@Req() request: CustomeRequest): Promise<Data[]> {
-    return this.service.getDataDevicesMonth(request.userId);
-  }
-
-  @Get('data/devices/working/year')
-  getDataDevicesYear(@Req() request: CustomeRequest): Promise<Data[]> {
-    return this.service.getDataDevicesYear(request.userId);
   }
 
   @HttpCode(HttpStatus.OK)
@@ -190,14 +130,6 @@ export class MqttController {
     );
   }
 
-  @Get('yesterday/data/statistics/devices/:time')
-  getYesterdayDataStatisticsDevices(
-    @Req() request: CustomeRequest,
-    @Param('time') time: string,
-  ): Promise<LastData[]> {
-    return this.service.getYesterdayDataStatisticsDevices(request.userId, time);
-  }
-
   // ! FOR THE ADMIN
 
   @Get('admin/data')
@@ -208,11 +140,6 @@ export class MqttController {
   @Get('admin/data/device/name')
   getDataDeviceNameAdmin(): Promise<Data[]> {
     return this.service.getDataDeviceNameAdmin();
-  }
-
-  @Get('admin/data/device/name/present')
-  getDataDeviceNamePresentAdmin(): Promise<Data[]> {
-    return this.service.getDataDeviceNamePresentAdmin();
   }
 
   @Get('admin/data/imei/:imei')
@@ -260,41 +187,6 @@ export class MqttController {
     return this.service.getLastDataImeiAdmin(imei);
   }
 
-  @Get('admin/data/statistics/devices')
-  getDataStaticsDevicesAdmin(): Promise<Data[]> {
-    return this.service.getDataStaticsDevicesAdmin();
-  }
-
-  @Get('/admin/data/statistics')
-  getDataStaticsAdmin(): Promise<Data[]> {
-    return this.service.getDataStaticsAdmin();
-  }
-
-  @Get('admin/data/devices/working/present')
-  getDataDevicesPresentDayAdmin(): Promise<Data[]> {
-    return this.service.getDataDevicesPresentDayAdmin();
-  }
-
-  @Get('admin/data/devices/working/three')
-  getDataDevicesThreeDayAdmin(): Promise<Data[]> {
-    return this.service.getDataDevicesThreeDayAdmin();
-  }
-
-  @Get('admin/data/devices/working/ten')
-  getDataDevicesTenDayAdmin(): Promise<Data[]> {
-    return this.service.getDataDevicesTenDayAdmin();
-  }
-
-  @Get('admin/data/devices/working/month')
-  getDataDevicesMonthAdmin(): Promise<Data[]> {
-    return this.service.getDataDevicesMonthAdmin();
-  }
-
-  @Get('admin/data/devices/working/year')
-  getDataDevicesYearAdmin(): Promise<Data[]> {
-    return this.service.getDataDevicesYearAdmin();
-  }
-
   @HttpCode(HttpStatus.OK)
   @Post('/admin/filter/data')
   getDataFilterAdmin(@Body() body: filterDto): Promise<Data[]> {
@@ -321,12 +213,5 @@ export class MqttController {
     @Body() body: any,
   ): Promise<LastData[]> {
     return this.service.getYesterdayDataStatisticsFoundNameAdmin(body.name);
-  }
-
-  @Get('admin/yesterday/data/statistics/devices/:time')
-  getYesterdayDataStatisticsDevicesAdmin(
-    @Param('time') time: string,
-  ): Promise<LastData[]> {
-    return this.service.getYesterdayDataStatisticsDevicesAdmin(time);
   }
 }
