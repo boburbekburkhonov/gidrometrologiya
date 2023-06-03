@@ -130,6 +130,24 @@ export class MqttController {
     );
   }
 
+  @Get('one/year/data/statistics')
+  getOneYearDataStatistics(
+    @Req() request: CustomeRequest,
+  ): Promise<LastData[]> {
+    return this.service.getOneYearDataStatistics(request.userId);
+  }
+
+  @Post('one/year/data/statistics/found/name')
+  getOneYearDataStatisticsFoundName(
+    @Req() request: CustomeRequest,
+    @Body() body: any,
+  ): Promise<LastData[]> {
+    return this.service.getOneYearDataStatisticsFoundName(
+      request.userId,
+      body.name,
+    );
+  }
+
   // ! FOR THE ADMIN
 
   @Get('admin/data')
@@ -213,5 +231,17 @@ export class MqttController {
     @Body() body: any,
   ): Promise<LastData[]> {
     return this.service.getYesterdayDataStatisticsFoundNameAdmin(body.name);
+  }
+
+  @Get('admin/one/year/data/statistics')
+  getOneYearDataStatisticsAdmin(): Promise<LastData[]> {
+    return this.service.getOneYearDataStatisticsAdmin();
+  }
+
+  @Post('admin/one/year/data/statistics/found/name')
+  getOneYearDataStatisticsFoundNameAdmin(
+    @Body() body: any,
+  ): Promise<LastData[]> {
+    return this.service.getOneYearDataStatisticsFoundNameAdmin(body.name);
   }
 }

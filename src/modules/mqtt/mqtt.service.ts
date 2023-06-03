@@ -15,6 +15,7 @@ import {
   YesterdayDataStatistic,
   yesterdayDataStatisticDocument,
 } from './schemas/yesterdayDataStatistic.schema';
+import { oneYearData, oneYearDataDocument } from './schemas/oneYearData.schema';
 
 @Injectable()
 export class MqttService implements OnModuleInit {
@@ -28,6 +29,8 @@ export class MqttService implements OnModuleInit {
     private readonly yesterdayDataModel: Model<yesterdayDataDocument>,
     @InjectModel(YesterdayDataStatistic.name, 'YesterdayDataStatistic')
     private readonly yesterdayDataStatisticModel: Model<yesterdayDataStatisticDocument>,
+    @InjectModel(oneYearData.name, 'OneYearData')
+    private readonly oneYearDataStatisticModel: Model<oneYearDataDocument>,
   ) {}
 
   private options: IMqttConnectOptions = {
@@ -393,6 +396,23 @@ export class MqttService implements OnModuleInit {
       .sort({ time: -1 });
   }
 
+  // ! ONE YEAR DATA STATISTICS
+  async getOneYearDataStatistics(userId: string): Promise<oneYearData[]> {
+    return await this.oneYearDataStatisticModel
+      .find({ user: userId })
+      .sort({ time: -1 });
+  }
+
+  // ! ONE YEAR DATA STATISTICS FOUND NAME
+  async getOneYearDataStatisticsFoundName(
+    userId: string,
+    name: string,
+  ): Promise<oneYearData[]> {
+    return await this.oneYearDataStatisticModel
+      .find({ user: userId, name: name })
+      .sort({ time: -1 });
+  }
+
   // ? ADMIN ----------------------------------------------------------
 
   //! DATA
@@ -597,6 +617,20 @@ export class MqttService implements OnModuleInit {
     name: string,
   ): Promise<YesterdayDataStatistic[]> {
     return await this.yesterdayDataStatisticModel
+      .find({ name: name })
+      .sort({ time: -1 });
+  }
+
+  // ! ONE YEAR DATA STATISTICS
+  async getOneYearDataStatisticsAdmin(): Promise<oneYearData[]> {
+    return await this.oneYearDataStatisticModel.find().sort({ time: -1 });
+  }
+
+   // ! ONE YEAR DATA STATISTICS FOUND NAME
+   async getOneYearDataStatisticsFoundNameAdmin(
+    name: string,
+  ): Promise<oneYearData[]> {
+    return await this.oneYearDataStatisticModel
       .find({ name: name })
       .sort({ time: -1 });
   }
